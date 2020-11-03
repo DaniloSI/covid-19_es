@@ -6,41 +6,121 @@
 import dash
 import dash_core_components as dcc
 import dash_html_components as html
+import dash_bootstrap_components as dbc
 import plotly.express as px
 import pandas as pd
 
-app = dash.Dash(__name__)
+app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
 
 df = pd.read_csv('../notebooks_output/microdados_pre-processed.csv', sep=',', encoding='UTF-8')
 
-fig = px.line(
+figLineConfirmadosAcumulado = px.line(
     df.groupby(['DataNotificacao', 'Municipio'])
         .sum()
-        .reset_index()
-        .query('Municipio == "VITORIA" | Municipio == "SERRA"'),
+        .reset_index(),
+        # .query('Municipio == "VITORIA" | Municipio == "SERRA"'),
     x="DataNotificacao",
-    y="Obitos",
+    y="ConfirmadosAcumulado",
     color="Municipio",
     hover_name="Municipio",
     labels={
         'DataNotificacao': 'Data',
-        'Obitos': 'Óbitos',
+        'ConfirmadosAcumulado': 'Casos Acumulados',
         'Municipio': 'Município'
     }
 )
 
-app.layout = html.Div(children=[
-    html.H1(children='Hello Dash'),
+figLineObitosAcumulado = px.line(
+    df.groupby(['DataNotificacao', 'Municipio'])
+        .sum()
+        .reset_index(),
+    x="DataNotificacao",
+    y="ObitosAcumulado",
+    color="Municipio",
+    hover_name="Municipio",
+    labels={
+        'DataNotificacao': 'Data',
+        'ObitosAcumulado': 'Óbitos Acumulados',
+        'Municipio': 'Município'
+    }
+)
 
-    html.Div(children='''
-        Dash: A web application framework for Python.
-    '''),
+figScatterCasosObitosAcumulado = px.scatter(
+    df.groupby(['DataNotificacao', 'Municipio'])
+        .sum()
+        .reset_index()
+        .drop_duplicates('Municipio', keep='last')
+        .sort_values('ConfirmadosAcumulado')
+        .tail(30),
+    x='ObitosAcumulado',
+    y='ConfirmadosAcumulado',
+    color='Municipio',
+    size='ConfirmadosAcumulado',
+    hover_data=['Municipio'],
+    labels={
+        'ObitosAcumulado': 'Óbitos Acumulados',
+        'ConfirmadosAcumulado': 'Casos Acumulados',
+        'Municipio': 'Município',
+    },
+    title='Top 30 Municípios'
+)
 
-    dcc.Graph(
-        id='example-graph',
-        figure=fig
-    )
-])
+app.layout = dbc.Container(
+    [
+        dbc.Row(
+            [
+                dbc.Col(
+                    dbc.Card(
+                        [
+                            dbc.CardHeader('Acumulado de Casos', style={'textAlign': 'center'}),
+                            dbc.CardBody(
+                                dcc.Graph(
+                                    id='casos-acumulados',
+                                    figure=figLineConfirmadosAcumulado
+                                ),
+                            ),
+                        ]
+                    ),
+                    md=6
+                ),
+                dbc.Col(
+                    dbc.Card(
+                        [
+                            dbc.CardHeader('Acumulado de Óbitos', style={'textAlign': 'center'}),
+                            dbc.CardBody(
+                                dcc.Graph(
+                                    id='obitos-acumulados',
+                                    figure=figLineObitosAcumulado
+                                ),
+                            ),
+                        ]
+                    ),
+                    md=6
+                ),
+            ]
+        ),
+        dbc.Row(
+            [
+                dbc.Col(
+                    dbc.Card(
+                        [
+                            dbc.CardHeader('Acumulado de Casos vs Acumulado de Óbitos', style={'textAlign': 'center'}),
+                            dbc.CardBody(
+                                dcc.Graph(
+                                    id='casos-obitos-acumulados',
+                                    figure=figScatterCasosObitosAcumulado
+                                ),
+                            ),
+                        ]
+                    ),
+                    md=6
+                ),
+            ]
+        )
+    ],
+    fluid=True,
+    className='p-2'
+)
 
 if __name__ == '__main__':
     app.run_server(debug=True)
