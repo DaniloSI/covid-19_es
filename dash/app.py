@@ -11,6 +11,7 @@ import plotly.express as px
 import plotly.graph_objects as go
 import pandas as pd
 import json
+import os
 
 app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
 
@@ -50,7 +51,7 @@ figChoroplethIncidencia = px.choropleth(
 )
 
 figChoroplethIncidencia.update_geos(fitbounds="geojson", visible=False, lataxis_range=[0,500], lonaxis_range=[0, 100])
-figChoroplethIncidencia.update_layout(autosize=True, margin={'t': 50, 'r': 0, 'b': 0, 'l': 0})
+figChoroplethIncidencia.update_layout(autosize=True, margin={'t': 50, 'r': 0, 'b': 0, 'l': 0}, coloraxis_colorbar_title='')
 
 
 df_choropleph_letalidade = df.groupby(['DataNotificacao', 'Municipio'])\
@@ -84,7 +85,7 @@ figChoroplethLetalidade = px.choropleth(
 )
 
 figChoroplethLetalidade.update_geos(fitbounds="geojson", visible=False, lataxis_range=[0,500], lonaxis_range=[0, 100])
-figChoroplethLetalidade.update_layout(autosize=True, margin={'t': 50, 'r': 0, 'b': 0, 'l': 0})
+figChoroplethLetalidade.update_layout(autosize=True, margin={'t': 50, 'r': 0, 'b': 0, 'l': 0}, coloraxis_colorbar_title='')
 
 
 
@@ -144,16 +145,50 @@ figScatterCasosObitosAcumulado = px.scatter(
     y='ConfirmadosAcumulado',
     color='Municipio',
     size='ConfirmadosAcumulado',
-    hover_data=['Municipio'],
+    hover_name='Municipio',
+    hover_data={'Municipio': False},
     labels={
         'ObitosAcumulado': 'Óbitos Acumulados',
         'ConfirmadosAcumulado': 'Casos Acumulados',
-        'Municipio': 'Município',
+        'Municipio': '',
     },
     title='Top 30 Municípios'
 )
 
 figScatterCasosObitosAcumulado.update_layout(autosize=True, margin={'t': 50, 'r': 0, 'b': 50, 'l': 50})
+
+
+
+df_scatter_inc_let = df.groupby(['DataNotificacao', 'Municipio'])\
+    .sum()\
+    .reset_index()\
+    .drop_duplicates('Municipio', keep='last')\
+    .merge(df_municipios, on='Municipio', how='left')
+
+df_scatter_inc_let['Incidencia'] = round(df_scatter_inc_let['ConfirmadosAcumulado'] * 10000 / df_scatter_inc_let['PopulacaoEstimada'], 1)
+df_scatter_inc_let['Letalidade'] = round(df_scatter_inc_let['ObitosAcumulado'] * 100.0 / df_scatter_inc_let['ConfirmadosAcumulado'], 2)
+
+df_scatter_inc_let = df_scatter_inc_let.dropna()\
+    .sort_values('Incidencia')\
+    .tail(30)
+
+figScatterIncidenciaLetalidade = px.scatter(
+    df_scatter_inc_let, x='Letalidade',
+    y='Incidencia',
+    color='Municipio',
+    size='Incidencia',
+    hover_name='Municipio',
+    hover_data={'Municipio': False},
+    labels={
+        'Incidencia': 'Incidência',
+        'Municipio': '',
+    },
+    title='Top 30 Municípios'
+)
+
+figScatterIncidenciaLetalidade.update_layout(autosize=True, margin={'t': 50, 'r': 0, 'b': 50, 'l': 50})
+
+server = app.server
 
 # Renderiza componentes
 app.layout = dbc.Container(
@@ -231,6 +266,23 @@ app.layout = dbc.Container(
                     ],
                     md=6,
                     className="pr-0"
+                ),
+                dbc.Col(
+                    [
+                        dbc.Card(
+                            [
+                                dbc.CardBody(
+                                    dcc.Graph(
+                                        id='incidencia-letalidade',
+                                        figure=figScatterIncidenciaLetalidade
+                                    ),
+                                ),
+                            ],
+                            className="m-1"
+                        ),
+                    ],
+                    md=6,
+                    className="pl-0"
                 )
             ]
         )
