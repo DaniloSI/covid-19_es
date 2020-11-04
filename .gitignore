@@ -1,5 +1,4 @@
 notebooks_source/
-notebooks_output/
 venv/
 *.pyc
 .DS_Store
