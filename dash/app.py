@@ -16,12 +16,12 @@ import os
 app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
 
 # Carrega Data Frames
-with open('../notebooks_source/ES_MALHA_MUNICIPIOS.geojson') as json_file:
+with open('../data_source/ES_MALHA_MUNICIPIOS.geojson') as json_file:
     municipios = json.load(json_file)
 
 df = pd.read_csv('../notebooks_output/microdados_pre-processed.csv', sep=',', encoding='UTF-8')
 
-df_municipios = pd.read_csv('../notebooks_source/municipios.csv')
+df_municipios = pd.read_csv('../data_source/municipios.csv')
 
 df_choropleph = df.groupby(['DataNotificacao', 'Municipio'])\
     .sum()\
