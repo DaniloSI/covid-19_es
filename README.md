@@ -1,5 +1,13 @@
 # COVID-19 no Espírito Santo
 
+## Sumário
+
+- [Estrutura do Projeto](https://github.com/DaniloSI/covid-19_es#estrutura-do-projeto)
+- [Baixando e Executando Localmente](https://github.com/DaniloSI/covid-19_es#baixando-e-executando-localmente)
+  - [Pré-Requisitos](https://github.com/DaniloSI/covid-19_es#pr%C3%A9-requisitos)
+  - [Preparando o Ambiente](https://github.com/DaniloSI/covid-19_es#preparando-o-ambiente)
+  - [Executando Localmente](https://github.com/DaniloSI/covid-19_es#executando-localmente)
+
 ## Estrutura do Projeto
 
 O diagrama abaixo apresenta a organização de pastas do projeto.
