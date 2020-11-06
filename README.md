@@ -50,6 +50,7 @@ O projeto foi totalmente desenvolvido utilizando o sistema operacional Linux Ubu
 
 ### Pré-Requisitos
 
+- Git
 - Python 3.8.5
 - Pip
 
