@@ -3,10 +3,10 @@
 ## Sumário
 
 - [Estrutura do Projeto](https://github.com/DaniloSI/covid-19_es#estrutura-do-projeto)
-- [Baixando o Projeto e Executando o Dash Localmente](https://github.com/DaniloSI/covid-19_es#baixando-e-executando-localmente)
+- [Baixando o Projeto e Executando o Dash Localmente](https://github.com/DaniloSI/covid-19_es#baixando-o-projeto-e-executando-o-dash-localmente)
   - [Pré-Requisitos](https://github.com/DaniloSI/covid-19_es#pr%C3%A9-requisitos)
   - [Preparando o Ambiente](https://github.com/DaniloSI/covid-19_es#preparando-o-ambiente)
-  - [Executando o Dash Localmente](https://github.com/DaniloSI/covid-19_es#executando-localmente)
+  - [Executando o Dash Localmente](https://github.com/DaniloSI/covid-19_es#executando-o-dash-localmente)
 
 ## Estrutura do Projeto
 
