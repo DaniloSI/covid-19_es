@@ -35,7 +35,7 @@ Significado de cada pasta e item do projeto:
 - **dash**: Possui o código fonte responsável pelo Dashboard e utiliza a ferramenta Dash do Plotly.
   - **app.py**: Contém o código python para gerar os componentes do *Dash Core* e do *Dash Html*. Além disso é utilizado para servir a página HTML do Dashboard.
   - **assets**: Contém as estilizações customizadas para a página HTML do Dashboard.
-- **data_source**: Contém os dados que foram coletados do IBGE e pré-processados. Esses dados são utilizados para gerar bases de dados enriquecidas, através da integração com a base de dados do [painel da COVID-19](https://coronavirus.es.gov.br/painel-covid-19-es).
+- **data**: Contém os dados que foram coletados do IBGE e pré-processados. Esses dados são utilizados para gerar bases de dados enriquecidas, através da integração com a base de dados do [painel da COVID-19](https://coronavirus.es.gov.br/painel-covid-19-es).
 - **notebooks**: Contém os notebooks responsáveis por realizar o pré-processamento dos dados e para gerar um "rascunho" das visualizações contidas no Dashboard.
 - **notebooks_output**: Contém o resultado do pré-processamento realizado no notebook *Pre-processing.ipynb*.
 - **Procfile**: Possui o código utilizado pelo Heroku para servir o dashboard.
