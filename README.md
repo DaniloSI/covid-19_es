@@ -3,10 +3,10 @@
 ## Sumário
 
 - [Estrutura do Projeto](https://github.com/DaniloSI/covid-19_es#estrutura-do-projeto)
-- [Baixando e Executando Localmente](https://github.com/DaniloSI/covid-19_es#baixando-e-executando-localmente)
+- [Baixando o Projeto e Executando o Dash Localmente](https://github.com/DaniloSI/covid-19_es#baixando-e-executando-localmente)
   - [Pré-Requisitos](https://github.com/DaniloSI/covid-19_es#pr%C3%A9-requisitos)
   - [Preparando o Ambiente](https://github.com/DaniloSI/covid-19_es#preparando-o-ambiente)
-  - [Executando Localmente](https://github.com/DaniloSI/covid-19_es#executando-localmente)
+  - [Executando o Dash Localmente](https://github.com/DaniloSI/covid-19_es#executando-localmente)
 
 ## Estrutura do Projeto
 
@@ -44,7 +44,7 @@ Significado de cada pasta e item do projeto:
 - **Procfile**: Possui o código utilizado pelo Heroku para servir o dashboard.
 - **requirements.txt**: Contém as dependências do projeto.
 
-## Baixando e Executando Localmente
+## Baixando o Projeto e Executando o Dash Localmente
 
 O projeto foi totalmente desenvolvido utilizando o sistema operacional Linux Ubuntu 20.04.1 LTS. Portanto, alguns comandos aplicados ao terminal, devem ser substituídos por seus equivalentes, de acordo com o sistema operacional utilizado.
 
@@ -83,7 +83,7 @@ $: source venv/bin/activate
 $: pip3 install -r requirements.txt
 ```
 
-### Executando Localmente
+### Executando o Dash Localmente
 
 1. Acesse a pasta dash com o seguinte comando:
 
