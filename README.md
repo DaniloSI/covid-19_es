@@ -55,7 +55,7 @@ Execute o passo-a-passo abaixo, sem utilizar o trecho "$: ". Esse trecho apenas 
 $: git clone https://github.com/DaniloSI/covid-19_es.git
 $: cd covid-19_es
 ```
-2. Instale o **virtualenv**, caso não o tenha instalado, utilizando o seguinte comando:
+2. Instale o **virtualenv**, caso não o tenha instalado, utilizando os seguintes comandos:
 
 ```
 $: apt-get update
@@ -69,7 +69,7 @@ $: python3 -m venv venv/
 $: source venv/bin/activate
 ```
 
-4. Instale as dependências com o seguinte comando:
+4. Instale as dependências do projeto com o seguinte comando:
 
 ```
 $: pip3 install -r requirements.txt
@@ -89,5 +89,5 @@ $: cd dash
 $: python3 app.py
 ```
 
-Após executar localmente, será possível acessar o dashboard através do da url **localhost:8050**.
+Após executar localmente, será possível acessar o dashboard através da url **localhost:8050**.
 > Obs.: O dash disponibiliza na porta 8050 como padrão, mas pode utilizar outra porta, caso esta esteja em uso.
