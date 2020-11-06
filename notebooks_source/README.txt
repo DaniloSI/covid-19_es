@@ -1,1 +1,0 @@
-Coloque nessa pasta os dados da COVID-19 baixados do Painel da COVID-19 do ES

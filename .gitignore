@@ -1,4 +1,3 @@
-notebooks_source/MICRODADOS_*
 venv/
 *.pyc
 .DS_Store
