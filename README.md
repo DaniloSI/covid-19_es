@@ -45,6 +45,8 @@ Significado de cada pasta e item do projeto:
 
 O projeto foi totalmente desenvolvido utilizando o sistema operacional Linux Ubuntu 20.04.1 LTS. Portanto, alguns comandos aplicados ao terminal, devem ser substituídos por seus equivalentes, de acordo com o sistema operacional utilizado.
 
+Execute os comandos sem utilizar o trecho "$: ". Esse trecho apenas indica que trata-se de um novo comando a ser executado.
+
 ### Pré-Requisitos
 
 - Git
@@ -52,8 +54,6 @@ O projeto foi totalmente desenvolvido utilizando o sistema operacional Linux Ubu
 - Pip
 
 ### Preparando o Ambiente
-
-Execute o passo-a-passo abaixo, sem utilizar o trecho "$: ". Esse trecho apenas indica que trata-se de um novo comando a ser executado.
 
 1. Clone o repositório do projeto e entre na pasta, usando os seguintes comandos:
 
