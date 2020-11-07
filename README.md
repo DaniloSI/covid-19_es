@@ -16,8 +16,18 @@ O diagrama abaixo apresenta a organização de pastas do projeto.
 .
 ├── dash
 │   ├── app.py
-│   └── assets
-│       └── page.css
+│   ├── assets
+│   │   └── page.css
+│   └── components
+│       ├── data.py
+│       ├── graficos
+│       │   ├── Evolucao.py
+│       │   ├── __init__.py
+│       │   └── ScatterMunicipio.py
+│       ├── __init__.py
+│       └── mapas
+│           ├── ChoroplethIncidenciaLetalidade.py
+│           └── __init__.py
 ├── data
 │   ├── ES_MALHA_MUNICIPIOS.geojson
 │   └── municipios.csv
