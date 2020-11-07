@@ -64,8 +64,8 @@ $: cd covid-19_es
 2. Instale o **virtualenv**, caso não o tenha instalado, utilizando os seguintes comandos:
 
 ```
-$: apt-get update
-$: apt-get install python3-virtualenv
+$: sudo apt-get update
+$: sudo apt-get install python3-virtualenv
 ```
 
 3. Crie e ative um ambiente virtual com os seguintes comandos:
