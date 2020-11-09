@@ -14,28 +14,25 @@ O diagrama abaixo apresenta a organização de pastas do projeto.
 
 ```
 .
-├── dash/
-│   ├── app.py
-│   ├── assets/
-│   │   └── page.css
-│   └── components/
-│       ├── data.py
-│       ├── graficos/
-│       │   ├── Evolucao.py
-│       │   ├── __init__.py
-│       │   └── ScatterMunicipio.py
-│       ├── __init__.py
-│       └── mapas/
-│           ├── ChoroplethIncidenciaLetalidade.py
-│           └── __init__.py
-├── data/
-│   ├── ES_MALHA_MUNICIPIOS.geojson
-│   └── municipios.csv
-├── notebooks/
-│   ├── Data-visualizations.ipynb
-│   └── Pre-processing.ipynb
-├── notebooks_output/
-│   └── microdados_pre-processed.csv
+├── dash
+│   ├── app.py
+│   ├── assets
+│   │   └── page.css
+│   └── components
+│       ├── data.py
+│       ├── graficos
+│       │   ├── Evolucao.py
+│       │   └── ScatterMunicipio.py
+│       └── mapas
+│           └── ChoroplethIncidenciaLetalidade.py
+├── data
+│   ├── ES_MALHA_MUNICIPIOS.geojson
+│   └── municipios.csv
+├── notebooks
+│   ├── Data-visualizations.ipynb
+│   └── Pre-processing.ipynb
+├── notebooks_output
+│   └── microdados_pre-processed.csv
 ├── Procfile
 ├── README.md
 └── requirements.txt
