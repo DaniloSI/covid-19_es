@@ -14,24 +14,24 @@ O diagrama abaixo apresenta a organização de pastas do projeto.
 
 ```
 .
-├── dash
+├── dash/
 │   ├── app.py
-│   ├── assets
+│   ├── assets/
 │   │   └── page.css
-│   └── components
+│   └── components/
 │       ├── data.py
-│       ├── graficos
+│       ├── graficos/
 │       │   ├── Evolucao.py
 │       │   └── ScatterMunicipio.py
-│       └── mapas
+│       └── mapas/
 │           └── ChoroplethIncidenciaLetalidade.py
-├── data
+├── data/
 │   ├── ES_MALHA_MUNICIPIOS.geojson
 │   └── municipios.csv
-├── notebooks
+├── notebooks/
 │   ├── Data-visualizations.ipynb
 │   └── Pre-processing.ipynb
-├── notebooks_output
+├── notebooks_output/
 │   └── microdados_pre-processed.csv
 ├── Procfile
 ├── README.md
