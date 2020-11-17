@@ -2,11 +2,18 @@
 
 ## Sumário
 
+- [Visão Geral]()
 - [Estrutura do Projeto](https://github.com/DaniloSI/covid-19_es#estrutura-do-projeto)
 - [Baixando o Projeto e Executando o Dash Localmente](https://github.com/DaniloSI/covid-19_es#baixando-o-projeto-e-executando-o-dash-localmente)
   - [Pré-Requisitos](https://github.com/DaniloSI/covid-19_es#pr%C3%A9-requisitos)
   - [Preparando o Ambiente](https://github.com/DaniloSI/covid-19_es#preparando-o-ambiente)
   - [Executando o Dash Localmente](https://github.com/DaniloSI/covid-19_es#executando-o-dash-localmente)
+  
+## Visão Geral
+
+O diagrama abaixo apresenta uma visão geral de todo o projeto.
+
+![Imgur](https://i.imgur.com/iDIp8lS.png)
 
 ## Estrutura do Projeto
 
