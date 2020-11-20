@@ -13,7 +13,7 @@
 
 O diagrama abaixo apresenta uma visão geral de todo o projeto.
 
-![Imgur](https://i.imgur.com/HztbLt4.png)
+![Imgur](https://i.imgur.com/ErygqEz.png)
 
 ## Estrutura do Projeto
 
