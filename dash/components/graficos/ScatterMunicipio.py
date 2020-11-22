@@ -17,8 +17,8 @@ figScatterCasosObitosAcumulado = px.scatter(
     hover_name='Municipio',
     hover_data={'Municipio': False},
     labels={
-        'ObitosAcumulado': 'Óbitos Acumulados',
-        'ConfirmadosAcumulado': 'Casos Acumulados',
+        'ObitosAcumulado': 'Óbitos',
+        'ConfirmadosAcumulado': 'Casos',
         'Municipio': '',
     },
     title='Municípios'
