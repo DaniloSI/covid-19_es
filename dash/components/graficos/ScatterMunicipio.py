@@ -9,8 +9,7 @@ figScatterCasosObitosAcumulado = px.scatter(
         .sum()
         .reset_index()
         .drop_duplicates('Municipio', keep='last')
-        .sort_values('ConfirmadosAcumulado')
-        .tail(30),
+        .sort_values('ConfirmadosAcumulado'),
     x='ObitosAcumulado',
     y='ConfirmadosAcumulado',
     color='Municipio',
@@ -22,7 +21,7 @@ figScatterCasosObitosAcumulado = px.scatter(
         'ConfirmadosAcumulado': 'Casos Acumulados',
         'Municipio': '',
     },
-    title='Top 30 Municípios'
+    title='Municípios'
 )
 
 figScatterCasosObitosAcumulado.update_layout(autosize=True, margin={'t': 50, 'r': 0, 'b': 50, 'l': 50})
@@ -37,8 +36,7 @@ df_scatter_inc_let['Incidencia'] = round(df_scatter_inc_let['ConfirmadosAcumulad
 df_scatter_inc_let['Letalidade'] = round(df_scatter_inc_let['ObitosAcumulado'] * 100.0 / df_scatter_inc_let['ConfirmadosAcumulado'], 2)
 
 df_scatter_inc_let = df_scatter_inc_let.dropna()\
-    .sort_values('Incidencia')\
-    .tail(30)
+    .sort_values('Incidencia')
 
 figScatterIncidenciaLetalidade = px.scatter(
     df_scatter_inc_let, x='Letalidade',
@@ -51,7 +49,7 @@ figScatterIncidenciaLetalidade = px.scatter(
         'Incidencia': 'Incidência',
         'Municipio': '',
     },
-    title='Top 30 Municípios'
+    title='Municípios'
 )
 
 figScatterIncidenciaLetalidade.update_layout(autosize=True, margin={'t': 50, 'r': 0, 'b': 50, 'l': 50})
