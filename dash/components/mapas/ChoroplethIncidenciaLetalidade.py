@@ -19,7 +19,7 @@ figChoroplethIncidencia = px.choropleth(
     locations='codarea',
     featureidkey="properties.codarea",
     color='Incidencia',
-    color_continuous_scale="Viridis",
+    color_continuous_scale=px.colors.sequential.Viridis[::-1],
     hover_name='Municipio',
     hover_data={
         'ConfirmadosAcumulado': True,
@@ -30,7 +30,7 @@ figChoroplethIncidencia = px.choropleth(
         'ConfirmadosAcumulado': 'Casos',
         'Incidencia': 'Incidência',
     },
-    title='Incidência (Total a Cada 10 Mil Habitantes)',
+    title='Incidência',
 )
 
 figChoroplethIncidencia.update_geos(fitbounds="geojson", visible=False, lataxis_range=[0,500], lonaxis_range=[0, 100])
@@ -42,7 +42,7 @@ df_choropleph_letalidade = df.groupby(['DataNotificacao', 'Municipio'])\
     .drop_duplicates('Municipio', keep='last')\
     .merge(df_municipios, on='Municipio', how='left')
 
-df_choropleph_letalidade['Letalidade'] = round(df_choropleph_letalidade['ObitosAcumulado'] * 100.0 / df_choropleph_letalidade['ConfirmadosAcumulado'], 2)
+df_choropleph_letalidade['Letalidade'] = round(df_choropleph_letalidade['ObitosAcumulado'] * 1.0 / df_choropleph_letalidade['ConfirmadosAcumulado'], 4)
 
 df_choropleph_letalidade.dropna(inplace=True)
 
@@ -52,22 +52,22 @@ figChoroplethLetalidade = px.choropleth(
     locations='codarea',
     featureidkey="properties.codarea",
     color='Letalidade',
-    color_continuous_scale="Magma",
+    color_continuous_scale=px.colors.sequential.Magma[::-1],
     hover_name='Municipio',
     hover_data={
         'ObitosAcumulado': True,
-        'Letalidade': ':.1f',
+        'Letalidade': ':.2%',
         'codarea': False},
     labels={
         'codarea': 'Código do Município',
         'ObitosAcumulado': 'Óbitos',
         'Letalidade': 'Letalidade',
     },
-    title='Letalidade (%)',
+    title='Letalidade',
 )
 
 figChoroplethLetalidade.update_geos(fitbounds="geojson", visible=False, lataxis_range=[0,500], lonaxis_range=[0, 100])
-figChoroplethLetalidade.update_layout(autosize=True, margin={'t': 50, 'r': 0, 'b': 0, 'l': 0}, coloraxis_colorbar_title='')
+figChoroplethLetalidade.update_layout(autosize=True, margin={'t': 50, 'r': 0, 'b': 0, 'l': 0}, coloraxis=dict(colorbar=dict(tickformat=".0%", title="")))
 
 rowChoropleph = dbc.Row(
     [
