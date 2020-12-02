@@ -1,5 +1,10 @@
 # COVID-19 no Espírito Santo
 
+O presente projeto foi desenvolvido como parte de um TCC, para a obtenção do grau de Bacharelado em Sistemas de Informação, no Ifes Campus Serra.
+
+- Aluno: Danilo de Oliveira
+- Orientador: Moisés Savedra Omena
+
 ## Sumário
 
 - [Visão Geral](https://github.com/DaniloSI/covid-19_es#vis%C3%A3o-geral)
