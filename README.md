@@ -68,6 +68,8 @@ Execute os comandos sem utilizar o trecho "$: ". Esse trecho apenas indica que t
 
 ### Pré-Requisitos
 
+Para executar o projeto localmente, é preciso que os seguintes itens estejam instalados em sua máquina:
+
 - Git
 - Python 3.8.5
 - Pip
