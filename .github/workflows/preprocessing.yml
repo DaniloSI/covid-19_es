@@ -2,23 +2,22 @@ name: covid-19_es
 
 on:
   schedule:
-    # runs at 06:00 UTC every day
-    - cron: "17 18 * * *"
-    
+    - cron: '21 18 * * *' # runs at 12:00 UTC everyday
+
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
+
       - name: checkout repo content
-        uses: actions/checkout@v2 # checkout the repository content to github runner.
-        
+        uses: actions/checkout@v2 # checkout the repository content to github runner
+
       - name: setup python
         uses: actions/setup-python@v2
         with:
-          python-version: 3.8 #install the python needed
+          python-version: '3.8' # install the python version needed
           
-      - name: execute py script # run the run.py to get the latest data
+      - name: install python packages
         run: |
           echo "🎉 The job was automaticallasd fasdf."
           python -m pip install --upgrade pip
