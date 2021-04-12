@@ -2,7 +2,7 @@ name: covid-19_es
 
 on:
   schedule:
-    - cron: '23 18 * * *' # runs at 12:00 UTC everyday
+    - cron: '28/30 18 * * *' # runs at 12:00 UTC everyday
 
 jobs:
   build:
