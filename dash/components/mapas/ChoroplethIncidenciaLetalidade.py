@@ -53,7 +53,7 @@ def get_rowChoropleph():
     df_choropleph_letalidade['Letalidade'] = round(
         df_choropleph_letalidade['ObitosAcumulado'] * 1.0 / df_choropleph_letalidade['ConfirmadosAcumulado'], 4)
 
-    df_choropleph_letalidade.fillna(0, inplace=True)
+    df_choropleph_letalidade.dropna(inplace=True)
 
     figChoroplethLetalidade = px.choropleth(
         df_choropleph_letalidade,

@@ -107,10 +107,15 @@ print('Persistindo o DataFrame resultante...')
 # Persiste o DataFrame
 usr = 'danilosi'
 pwd = 'QRGrkX9BvrgRWi2O'
-client = MongoClient(
-    f'mongodb+srv://{usr}:{pwd}@covid-19-es.nuzlk.mongodb.net/covid-19-es?retryWrites=true&w=majority')
+str_conn = f'mongodb+srv://{usr}:{pwd}@covid-19-es.nuzlk.mongodb.net/covid-19-es?retryWrites=true&w=majority'
+client = MongoClient(str_conn)
+
 df_counts_dict = df_counts.to_dict(orient='records')
-# client.db.dados.delete_many({})
-# client.db.dados.insert_many(df_counts_dict)
+
+print('Deletando registros antigos...')
+client.db.dados.delete_many({})
+
+print('Inserindo novos registros...')
+client.db.dados.insert_many(df_counts_dict)
 
 print('Fim')
