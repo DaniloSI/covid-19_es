@@ -14,6 +14,7 @@ app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
 server = app.server
 
 server.debug = False
+server.use_reloader = False
 
 
 def data_update():
