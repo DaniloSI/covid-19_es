@@ -2,54 +2,71 @@
 
 import plotly.express as px
 
-from ..data import df, df_municipios
+from ..data import df_municipios
+from components.database import DataBase
 
-figScatterCasosObitosAcumulado = px.scatter(
-    df.groupby(['DataNotificacao', 'Municipio'])
+
+def get_figScatterCasosObitosAcumulado():
+    df = DataBase.get_df()
+
+    figScatterCasosObitosAcumulado = px.scatter(
+        df.groupby(['DataNotificacao', 'Municipio'])
         .sum()
         .reset_index()
         .drop_duplicates('Municipio', keep='last')
         .sort_values('ConfirmadosAcumulado'),
-    x='ObitosAcumulado',
-    y='ConfirmadosAcumulado',
-    color='Municipio',
-    size='ConfirmadosAcumulado',
-    hover_name='Municipio',
-    hover_data={'Municipio': False},
-    labels={
-        'ObitosAcumulado': 'Óbitos',
-        'ConfirmadosAcumulado': 'Casos',
-        'Municipio': '',
-    },
-    title='Municípios'
-)
+        x='ObitosAcumulado',
+        y='ConfirmadosAcumulado',
+        color='Municipio',
+        size='ConfirmadosAcumulado',
+        hover_name='Municipio',
+        hover_data={'Municipio': False},
+        labels={
+            'ObitosAcumulado': 'Óbitos',
+            'ConfirmadosAcumulado': 'Casos',
+            'Municipio': '',
+        },
+        title='Municípios'
+    )
 
-figScatterCasosObitosAcumulado.update_layout(autosize=True, margin={'t': 50, 'r': 0, 'b': 50, 'l': 50})
+    figScatterCasosObitosAcumulado.update_layout(
+        autosize=True, margin={'t': 50, 'r': 0, 'b': 50, 'l': 50})
 
-df_scatter_inc_let = df.groupby(['DataNotificacao', 'Municipio'])\
-    .sum()\
-    .reset_index()\
-    .drop_duplicates('Municipio', keep='last')\
-    .merge(df_municipios, on='Municipio', how='left')
+    return figScatterCasosObitosAcumulado
 
-df_scatter_inc_let['Incidencia'] = round(df_scatter_inc_let['ConfirmadosAcumulado'] * 10000 / df_scatter_inc_let['PopulacaoEstimada'], 1)
-df_scatter_inc_let['Letalidade'] = round(df_scatter_inc_let['ObitosAcumulado'] * 100.0 / df_scatter_inc_let['ConfirmadosAcumulado'], 2)
 
-df_scatter_inc_let = df_scatter_inc_let.dropna()\
-    .sort_values('Incidencia')
+def get_figScatterIncidenciaLetalidade():
+    df = DataBase.get_df()
 
-figScatterIncidenciaLetalidade = px.scatter(
-    df_scatter_inc_let, x='Letalidade',
-    y='Incidencia',
-    color='Municipio',
-    size='Incidencia',
-    hover_name='Municipio',
-    hover_data={'Municipio': False},
-    labels={
-        'Incidencia': 'Incidência',
-        'Municipio': '',
-    },
-    title='Municípios'
-)
+    df_scatter_inc_let = df.groupby(['DataNotificacao', 'Municipio'])\
+        .sum()\
+        .reset_index()\
+        .drop_duplicates('Municipio', keep='last')\
+        .merge(df_municipios, on='Municipio', how='left')
 
-figScatterIncidenciaLetalidade.update_layout(autosize=True, margin={'t': 50, 'r': 0, 'b': 50, 'l': 50})
+    df_scatter_inc_let['Incidencia'] = round(
+        df_scatter_inc_let['ConfirmadosAcumulado'] * 10000 / df_scatter_inc_let['PopulacaoEstimada'], 1)
+    df_scatter_inc_let['Letalidade'] = round(
+        df_scatter_inc_let['ObitosAcumulado'] * 100.0 / df_scatter_inc_let['ConfirmadosAcumulado'], 2)
+
+    df_scatter_inc_let = df_scatter_inc_let.dropna()\
+        .sort_values('Incidencia')
+
+    figScatterIncidenciaLetalidade = px.scatter(
+        df_scatter_inc_let, x='Letalidade',
+        y='Incidencia',
+        color='Municipio',
+        size='Incidencia',
+        hover_name='Municipio',
+        hover_data={'Municipio': False},
+        labels={
+            'Incidencia': 'Incidência',
+            'Municipio': '',
+        },
+        title='Municípios'
+    )
+
+    figScatterIncidenciaLetalidade.update_layout(
+        autosize=True, margin={'t': 50, 'r': 0, 'b': 50, 'l': 50})
+
+    return figScatterIncidenciaLetalidade
