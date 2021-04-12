@@ -4,7 +4,7 @@ env:
 on:
   schedule:
     # runs at 06:00 UTC every day
-    - cron: "42 17 * * *"
+    - cron: "44 17 * * *"
     
 jobs:
   build:
