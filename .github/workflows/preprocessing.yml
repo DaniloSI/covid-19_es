@@ -1,9 +1,6 @@
 name: covid-19_es
 
 on:
-  push:
-    branches:
-      - master
   schedule:
     - cron: "*/5 * * * *" # runs at 12:00 UTC everyday
 
