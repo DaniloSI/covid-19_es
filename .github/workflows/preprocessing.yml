@@ -4,27 +4,22 @@ env:
 on:
   schedule:
     # runs at 06:00 UTC every day
-    - cron: "03 18 * * *"
+    - cron: "07 18 * * *"
     
 jobs:
   build:
-
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        python-version: [3.8]
 
     steps:
-    - uses: actions/checkout@v2
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v2
-      with:
-        python-version: ${{ matrix.python-version }}
-    - name: Install dependencies
-      run: |
-        echo "🎉 The job was automaticallasd fasdf."
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt
-    - name: Executa o preprocessing
-      run: |
-        python preprocessing.py
+      - name: checkout repo content
+        uses: actions/checkout@v2 # checkout the repository content to github runner.
+      - name: setup python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8 #install the python needed
+      - name: execute py script # run the run.py to get the latest data
+        run: |
+          echo "🎉 The job was automaticallasd fasdf."
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          python preprocessing.py
