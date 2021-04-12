@@ -13,9 +13,6 @@ app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
 
 server = app.server
 
-server.debug = False
-server.use_reloader = False
-
 
 def data_update():
     DataBase.refresh()
@@ -36,4 +33,4 @@ start_new_thread(schedule_update, ("Thread-Update", 1))
 app.layout = Dashboard.get_dashboard
 
 if __name__ == '__main__':
-    app.run_server(debug=True, use_reloader=False)
+    app.run_server(debug=False, use_reloader=False)

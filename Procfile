@@ -1,1 +1,1 @@
-web: gunicorn --timeout 600 app:server --chdir dash
+web: gunicorn --timeout 600 app:server --chdir dash --reload=False
