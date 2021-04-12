@@ -1,8 +1,10 @@
 name: covid-19_es
 
 on:
+  push:
+    branches: [master]
   schedule:
-    - cron: "37 18 * * *" # runs at 12:00 UTC everyday
+    - cron: "38 18 * * *" # runs at 12:00 UTC everyday
 
 jobs:
   build:
