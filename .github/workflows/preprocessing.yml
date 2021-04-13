@@ -1,4 +1,4 @@
-name: covid-19_es_preprocessing
+name: pre-processing
 
 on:
   # push:
