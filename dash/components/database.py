@@ -16,7 +16,7 @@ class DataBase():
         print('----- # -----')
         print('Carregando dados...')
         DataBase._df = pd.DataFrame(
-            list(DataBase._client.db.dados.find({}, {'_id': 0}).limit(1000)))
+            list(DataBase._client.db.dados.find({}, {'_id': 0})))
         print('Dados carregados.')
         print('----- # -----')
 
