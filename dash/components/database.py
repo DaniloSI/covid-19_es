@@ -1,22 +1,23 @@
 import pandas as pd
 from pymongo import MongoClient
-from datetime import datetime
+from datetime import datetime, timedelta
 
 
 class DataBase():
     _usr = 'danilosi'
     _pwd = 'QRGrkX9BvrgRWi2O'
-    _str_conn = f'mongodb+srv://{_usr}:{_pwd}@covid-19-es.nuzlk.mongodb.net/covid-19-es?retryWrites=true&w=majority'
+    _str_conn = f'mongodb+srv://{_usr}:{_pwd}@sandbox.nuzlk.mongodb.net/covid-19-es?retryWrites=true&w=majority'
     _client = MongoClient(_str_conn)
     _executed_first = False
     _df = None
 
     @staticmethod
     def fech():
+        from_date = datetime.now() - timedelta(30 * 4)
         print('----- # -----')
         print('Carregando dados...')
         DataBase._df = pd.DataFrame(
-            list(DataBase._client.db.dados.find({}, {'_id': 0})))
+            list(DataBase._client.db.dados.find({'DataNotificacao': {"$gte": from_date}}, {'_id': 0})))
         print('Dados carregados.')
         print('----- # -----')
 

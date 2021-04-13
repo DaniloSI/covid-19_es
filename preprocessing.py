@@ -1,6 +1,6 @@
 import pandas as pd
 from unidecode import unidecode
-from pymongo import MongoClient
+from pymongo import MongoClient, ReplaceOne
 
 
 print('Obtendo Microdados...')
@@ -103,19 +103,23 @@ df_counts[columns_ffill] = df_counts.groupby(['Municipio', 'Bairro'])\
     .fillna(0)[columns_ffill]
 
 
-print('Persistindo o DataFrame resultante...')
+print('Preparando para salvar o DataFrame resultante...')
 # Persiste o DataFrame
 usr = 'danilosi'
 pwd = 'QRGrkX9BvrgRWi2O'
-str_conn = f'mongodb+srv://{usr}:{pwd}@covid-19-es.nuzlk.mongodb.net/covid-19-es?retryWrites=true&w=majority'
+str_conn = f'mongodb+srv://{usr}:{pwd}@sandbox.nuzlk.mongodb.net/covid-19-es?retryWrites=true&w=majority'
 client = MongoClient(str_conn)
+
+df_counts['_id'] = pd.Series(
+    list(map(lambda x_id: x_id['_id'], list(client.db.dados.find({}, {'_id': 1})))))
+df_counts['_id'].fillna('', inplace=True)
 
 df_counts_dict = df_counts.to_dict(orient='records')
 
-print('Deletando registros antigos...')
-client.db.dados.delete_many({})
-
 print('Inserindo novos registros...')
-client.db.dados.insert_many(df_counts_dict)
+client.db.dados.bulk_write(
+    list(map(lambda row: ReplaceOne(
+        {'_id': row['_id']}, row, upsert=True), df_counts_dict))
+)
 
 print('Fim')
