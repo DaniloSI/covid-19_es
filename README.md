@@ -1,5 +1,7 @@
 # COVID-19 no Espírito Santo
 
+[![pre-processing](https://github.com/DaniloSI/covid-19_es/actions/workflows/preprocessing.yml/badge.svg?event=schedule)](https://github.com/DaniloSI/covid-19_es/actions/workflows/preprocessing.yml)
+
 O presente projeto foi desenvolvido como parte de um TCC, para a obtenção do grau de Bacharelado em Sistemas de Informação, no Ifes Campus Serra.
 
 - Aluno: Danilo de Oliveira
