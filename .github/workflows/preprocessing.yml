@@ -1,11 +1,11 @@
 name: pre-processing
 
 on:
-  # push:
-  #   branches:
-  #     - master
+  push:
+    branches:
+      - master
   schedule:
-    - cron: "0 */12 * * *" # runs at 12:00 UTC everyday
+    - cron: "0 */6 * * *"
 
 jobs:
   build:

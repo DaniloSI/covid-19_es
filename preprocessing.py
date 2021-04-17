@@ -5,6 +5,7 @@ from pymongo import MongoClient, ReplaceOne
 
 print('Obtendo Microdados...')
 url = 'https://bi.static.es.gov.br/covid19/MICRODADOS.csv'
+url = 'MICRODADOS.csv'
 df = pd.read_csv(url, sep=';', encoding='cp1252')
 
 
@@ -22,23 +23,14 @@ df['Bairro'] = df['Bairro'].apply(lambda x: unidecode(str(x)).upper())
 
 
 print('Calculando casos, óbitos e curas...')
-# Calcula o total diário e acumulado de confirmados
-df['ConfirmadosAcumulado'] = df[['Municipio', 'Bairro', 'DataNotificacao']]\
-    .groupby(['Municipio', 'Bairro'])\
-    .cumcount() + 1
-
+# Calcula o total diário de confirmados
 df['Confirmados'] = df[['Municipio', 'Bairro', 'DataNotificacao']]\
     .groupby(['Municipio', 'Bairro', 'DataNotificacao'])\
     .cumcount() + 1
 
-
-# Calcula o total diário e acumulado de óbitos
+# Calcula o total diário de óbitos
 df['Obitos'] = df['Evolucao'].apply(
     lambda evolucao: 1 if evolucao == 'Óbito pelo COVID-19' else 0)
-
-df['ObitosAcumulado'] = df[['Municipio', 'Bairro', 'DataNotificacao', 'Obitos']]\
-    .groupby(['Municipio', 'Bairro'])\
-    .cumsum()
 
 df['Obitos'] = df[['Municipio', 'Bairro', 'DataNotificacao', 'Obitos']]\
     .groupby(['Municipio', 'Bairro', 'DataNotificacao'])\
@@ -48,10 +40,6 @@ df['Obitos'] = df[['Municipio', 'Bairro', 'DataNotificacao', 'Obitos']]\
 # Calcula o total diário e acumulado de curas
 df['Curas'] = df['Evolucao'].apply(
     lambda evolucao: 1 if evolucao == 'Cura' else 0)
-
-df['CurasAcumulado'] = df[['Municipio', 'Bairro', 'DataNotificacao', 'Curas']]\
-    .groupby(['Municipio', 'Bairro'])\
-    .cumsum()
 
 df['Curas'] = df[['Municipio', 'Bairro', 'DataNotificacao', 'Curas']]\
     .groupby(['Municipio', 'Bairro', 'DataNotificacao'])\
@@ -78,9 +66,6 @@ df_counts = df_counts.merge(
         'Confirmados',
         'Obitos',
         'Curas',
-        'ConfirmadosAcumulado',
-        'ObitosAcumulado',
-        'CurasAcumulado'
     ]].drop_duplicates(grupo_base, keep='last')
     .dropna(),
     on=grupo_base,
@@ -96,30 +81,61 @@ df_counts.fillna(
     inplace=True
 )
 
-columns_ffill = ['ConfirmadosAcumulado', 'ObitosAcumulado', 'CurasAcumulado']
+columns_sum = ['Confirmados', 'Obitos', 'Curas']
+df_counts_by_week = df_counts.groupby(['Municipio', 'Bairro', pd.Grouper(key='DataNotificacao', freq='W-MON')])[columns_sum]\
+    .sum()\
+    .reset_index()\
+    .sort_values('DataNotificacao')
 
-df_counts[columns_ffill] = df_counts.groupby(['Municipio', 'Bairro'])\
-    .fillna(method='ffill')\
-    .fillna(0)[columns_ffill]
+df_counts_by_week['ConfirmadosAcumulado'] = df_counts_by_week[['Municipio', 'Bairro', 'DataNotificacao', 'Confirmados']]\
+    .groupby(['Municipio', 'Bairro'])\
+    .cumsum()
 
+df_counts_by_week['ObitosAcumulado'] = df_counts_by_week[['Municipio', 'Bairro', 'DataNotificacao', 'Obitos']]\
+    .groupby(['Municipio', 'Bairro'])\
+    .cumsum()
+
+df_counts_by_week['CurasAcumulado'] = df_counts_by_week[['Municipio', 'Bairro', 'DataNotificacao', 'Curas']]\
+    .groupby(['Municipio', 'Bairro'])\
+    .cumsum()
 
 print('Preparando para salvar o DataFrame resultante...')
 # Persiste o DataFrame
 usr = 'danilosi'
 pwd = 'QRGrkX9BvrgRWi2O'
-str_conn = f'mongodb+srv://{usr}:{pwd}@sandbox.nuzlk.mongodb.net/covid-19-es?retryWrites=true&w=majority'
+str_conn = f'mongodb+srv://{usr}:{pwd}@covid-19-es.nuzlk.mongodb.net/myFirstDatabase?retryWrites=true&w=majority'
 client = MongoClient(str_conn)
 
-df_counts['_id'] = pd.Series(
-    list(map(lambda x_id: x_id['_id'], list(client.db.dados.find({}, {'_id': 1})))))
-df_counts['_id'].fillna('', inplace=True)
+ids = list(map(lambda x_id: x_id['_id'], list(
+    client.db.dados.find({}, {'_id': 1}))))
 
-df_counts_dict = df_counts.to_dict(orient='records')
+df_counts_by_week['_id'] = pd.Series(ids)
+df_counts_by_week['_id'].fillna('', inplace=True)
 
-print('Inserindo novos registros...')
-client.db.dados.bulk_write(
-    list(map(lambda row: ReplaceOne(
-        {'_id': row['_id']}, row, upsert=True), df_counts_dict))
-)
+df_counts_by_week_dict = df_counts_by_week.to_dict(orient='records')
+
+
+def delete_ids_empty(item):
+    if (item['_id'] == ''):
+        del item['_id']
+    return item
+
+
+df_counts_by_week_dict = list(map(delete_ids_empty, df_counts_by_week_dict))
+
+print('Fazendo replace dos dados existentes...')
+to_replace = list(
+    filter(lambda row: '_id' in row.keys(), df_counts_by_week_dict))
+if len(to_replace) > 0:
+    client.db.dados.bulk_write(
+        list(map(lambda row: ReplaceOne(
+            {'_id': row['_id']}, row, upsert=True), to_replace))
+    )
+
+print('Fazendo inserindo novos dados...')
+to_insert = list(
+    filter(lambda row: '_id' not in row.keys(), df_counts_by_week_dict))
+if len(to_insert) > 0:
+    client.db.dados.insert_many(to_insert)
 
 print('Fim')
