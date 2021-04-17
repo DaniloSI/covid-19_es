@@ -4,15 +4,25 @@ import plotly.graph_objects as go
 from components.database import DataBase
 
 
-def get_figAreaAcumulados():
+def get_figAreaAcumulados(tipo='acumulado'):
     df = DataBase.get_df()
     figAreaAcumulados = go.Figure()
 
-    df_acumulados = df[['DataNotificacao', 'ConfirmadosAcumulado', 'ObitosAcumulado', 'CurasAcumulado']]\
+    if tipo == 'acumulado':
+        columns = ['DataNotificacao', 'ConfirmadosAcumulado',
+                   'ObitosAcumulado', 'CurasAcumulado']
+        columns_renames = {'ConfirmadosAcumulado': 'Casos',
+                           'ObitosAcumulado': 'Óbitos', 'CurasAcumulado': 'Curas'}
+    else:
+        columns = ['DataNotificacao', 'Confirmados', 'Obitos', 'Curas']
+        columns_renames = {'Confirmados': 'Casos',
+                           'Obitos': 'Óbitos', 'Curas': 'Curas'}
+
+    df_acumulados = df[columns]\
         .groupby(['DataNotificacao'])\
         .sum()\
         .reset_index()\
-        .rename({'ConfirmadosAcumulado': 'Casos', 'ObitosAcumulado': 'Óbitos', 'CurasAcumulado': 'Curas'}, axis=1)
+        .rename(columns_renames, axis=1)
 
     figAreaAcumulados.add_trace(
         go.Scatter(

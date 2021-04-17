@@ -131,6 +131,19 @@ class Dashboard():
                         dbc.Col(
                             dbc.Card(
                                 [
+                                    dbc.CardHeader(
+                                        dbc.RadioItems(
+                                            options=[
+                                                {"label": "Acumulado",
+                                                    "value": 'acumulado'},
+                                                {"label": "Semanal",
+                                                    "value": 'semanal'},
+                                            ],
+                                            value='acumulado',
+                                            id="radioitems-evolucao",
+                                            inline=True,
+                                        ),
+                                    ),
                                     dbc.CardBody(
                                         dcc.Graph(
                                             id='acumulados',
