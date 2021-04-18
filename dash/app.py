@@ -52,10 +52,10 @@ def on_evolucao_change(tipo, municipio, bairro):
 @app.callback(
     [
         Output("select-evolucao-bairros", "options"),
-        Output("select-evolucao-bairros", "disabled")
+        Output("select-evolucao-bairros", "disabled"),
+        Output("select-evolucao-bairros", "value"),
     ],
     Input("select-evolucao-municipios", "value"),
-
 )
 def on_evolucao_change(municipio):
     if municipio != None:
@@ -66,9 +66,9 @@ def on_evolucao_change(municipio):
         if len(bairros) > 0:
             options_bairros = list(
                 map(lambda b: {"label": b, "value": b}, bairros))
-            return options_bairros, False
+            return options_bairros, False, None
 
-    return [], True
+    return [], True, None
 
 
 @app.callback(
