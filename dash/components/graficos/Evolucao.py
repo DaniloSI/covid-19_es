@@ -76,4 +76,13 @@ def get_figAreaAcumulados(tipo='acumulado', municipio=None, bairro=None):
     figAreaAcumulados.update_layout(title=titulo, autosize=True, margin={
                                     't': 50, 'r': 0, 'b': 50, 'l': 50})
 
+    figAreaAcumulados.update_layout(
+        xaxis=dict(
+            rangeslider=dict(
+                visible=True
+            ),
+            type="date"
+        )
+    )
+
     return figAreaAcumulados

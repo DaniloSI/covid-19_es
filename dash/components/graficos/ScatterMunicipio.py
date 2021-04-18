@@ -42,11 +42,13 @@ def get_figScatter(tipo='casos-obitos'):
         size=y,
         hover_name='Municipio',
         hover_data={'Municipio': False},
+        size_max=55 if tipo == 'casos-obitos' else 45,
+        log_x=True,
         labels=columns_renames,
         title='Municípios'
     )
 
     figScatter.update_layout(
-        autosize=True, margin={'t': 50, 'r': 0, 'b': 50, 'l': 50})
+        autosize=True, margin={'t': 50, 'r': 0, 'b': 50, 'l': 50}, showlegend=False)
 
     return figScatter
