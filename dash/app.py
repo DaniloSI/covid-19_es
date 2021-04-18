@@ -8,8 +8,10 @@ from time import sleep
 from components.database import DataBase
 from components.dashboard import Dashboard
 import dash_bootstrap_components as dbc
+import dash_html_components as html
 from dash.dependencies import Input, Output
 from components.graficos.Evolucao import get_figAreaAcumulados
+from components.graficos.ScatterMunicipio import get_figScatter
 
 app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
 
@@ -37,10 +39,44 @@ app.layout = Dashboard.get_dashboard
 
 @app.callback(
     Output("acumulados", "figure"),
-    Input("radioitems-evolucao", "value"),
+    [
+        Input("radioitems-evolucao", "value"),
+        Input("select-evolucao-municipios", "value"),
+        Input("select-evolucao-bairros", "value"),
+    ],
 )
-def on_form_change(radioitems_evolucao_value):
-    return get_figAreaAcumulados(radioitems_evolucao_value)
+def on_evolucao_change(tipo, municipio, bairro):
+    return get_figAreaAcumulados(tipo, municipio, bairro)
+
+
+@app.callback(
+    [
+        Output("select-evolucao-bairros", "options"),
+        Output("select-evolucao-bairros", "disabled")
+    ],
+    Input("select-evolucao-municipios", "value"),
+
+)
+def on_evolucao_change(municipio):
+    if municipio != None:
+        query_municipio = f'Municipio == "{municipio}"'
+        bairros = DataBase.get_df()[['Municipio', 'Bairro']].query(
+            query_municipio).sort_values('Bairro').drop_duplicates()['Bairro'].tolist()
+
+        if len(bairros) > 0:
+            options_bairros = list(
+                map(lambda b: {"label": b, "value": b}, bairros))
+            return options_bairros, False
+
+    return [], True
+
+
+@app.callback(
+    Output("scatter-municipios", "figure"),
+    Input("radioitems-scatter", "value"),
+)
+def on_evolucao_change(tipo):
+    return get_figScatter(tipo)
 
 
 if __name__ == '__main__':

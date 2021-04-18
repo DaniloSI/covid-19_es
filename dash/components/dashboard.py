@@ -6,7 +6,7 @@ import dash_bootstrap_components as dbc
 from datetime import datetime
 
 from components.graficos.Evolucao import get_figAreaAcumulados
-from components.graficos.ScatterMunicipio import get_figScatterCasosObitosAcumulado, get_figScatterIncidenciaLetalidade
+from components.graficos.ScatterMunicipio import get_figScatter
 from components.mapas.ChoroplethIncidenciaLetalidade import get_rowChoropleph
 
 from components.database import DataBase
@@ -40,10 +40,16 @@ class Dashboard():
 
     @staticmethod
     def render():
+        municipios_options = list(map(lambda m: {"label": m, "value": m}, DataBase.get_df()[[
+            'Municipio']].sort_values('Municipio').drop_duplicates()['Municipio'].tolist()))
         print('----- # -----')
         print('Renderizando o Dashboard...')
         Dashboard._dashboard = dbc.Container(
             [
+                html.Div(html.A(html.Img(src='assets/img/GitHub-Mark-32px.png'),
+                                href="https://github.com/DaniloSI/covid-19_es", target="_blank", style={'marginRight': 10}), style={'position': 'absolute', 'right': 0, 'top': 30}),
+                html.H3('Covid-19 no Espírito Santo',
+                        style={'textAlign': "center", 'fontWeight': 400, 'margin': '25px 0px'}),
                 dbc.Row(
                     [
                         dbc.Col(
@@ -131,19 +137,46 @@ class Dashboard():
                         dbc.Col(
                             dbc.Card(
                                 [
-                                    dbc.CardHeader(
-                                        dbc.RadioItems(
-                                            options=[
-                                                {"label": "Acumulado",
-                                                    "value": 'acumulado'},
-                                                {"label": "Semanal",
-                                                    "value": 'semanal'},
+                                    dbc.CardHeader([
+                                        dbc.Row(
+                                            [
+                                                dbc.Col(
+                                                    dbc.RadioItems(
+                                                        id="radioitems-evolucao",
+                                                        options=[
+                                                            {"label": "Semanal",
+                                                                "value": 'semanal'},
+                                                            {"label": "Acumulado",
+                                                                "value": 'acumulado'},
+                                                        ],
+                                                        value='semanal',
+                                                        inline=True
+                                                    ),
+                                                    width=3
+                                                ),
+                                                dbc.Col(
+                                                    dcc.Dropdown(
+                                                        id="select-evolucao-municipios",
+                                                        options=municipios_options,
+                                                        value=None,
+                                                        placeholder="Selecione um município",
+                                                    ),
+                                                    xs=True
+                                                ),
+                                                dbc.Col(
+                                                    dcc.Dropdown(
+                                                        id="select-evolucao-bairros",
+                                                        options=[],
+                                                        value=None,
+                                                        placeholder="Selecione um bairro",
+                                                        disabled=True
+                                                    ),
+                                                    xs=True
+                                                )
                                             ],
-                                            value='acumulado',
-                                            id="radioitems-evolucao",
-                                            inline=True,
-                                        ),
-                                    ),
+                                            align="center"
+                                        )
+                                    ]),
                                     dbc.CardBody(
                                         dcc.Graph(
                                             id='acumulados',
@@ -166,10 +199,30 @@ class Dashboard():
                         dbc.Col(
                             dbc.Card(
                                 [
+                                    dbc.CardHeader([
+                                        dbc.Row(
+                                            [
+                                                dbc.Col(
+                                                    dbc.RadioItems(
+                                                        id="radioitems-scatter",
+                                                        options=[
+                                                            {"label": "Casos x Óbitos",
+                                                                "value": 'casos-obitos'},
+                                                            {"label": "Incidência x Letalidade",
+                                                                "value": 'incidencia-letalidade'},
+                                                        ],
+                                                        value='casos-obitos',
+                                                        inline=True
+                                                    ),
+                                                ),
+                                            ],
+                                            align="center"
+                                        )
+                                    ]),
                                     dbc.CardBody(
                                         dcc.Graph(
-                                            id='casos-obitos-acumulados',
-                                            figure=get_figScatterCasosObitosAcumulado()
+                                            id='scatter-municipios',
+                                            figure=get_figScatter()
                                         ),
                                     ),
                                 ],
@@ -178,19 +231,7 @@ class Dashboard():
                             className="pr-0"
                         ),
                         dbc.Col(
-                            [
-                                dbc.Card(
-                                    [
-                                        dbc.CardBody(
-                                            dcc.Graph(
-                                                id='incidencia-letalidade',
-                                                figure=get_figScatterIncidenciaLetalidade()
-                                            ),
-                                        ),
-                                    ],
-                                    className="m-1"
-                                ),
-                            ],
+                            [],
                             className="pl-0"
                         )
                     ]

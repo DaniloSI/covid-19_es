@@ -4,7 +4,7 @@ import plotly.graph_objects as go
 from components.database import DataBase
 
 
-def get_figAreaAcumulados(tipo='acumulado'):
+def get_figAreaAcumulados(tipo='acumulado', municipio=None, bairro=None):
     df = DataBase.get_df()
     figAreaAcumulados = go.Figure()
 
@@ -17,6 +17,15 @@ def get_figAreaAcumulados(tipo='acumulado'):
         columns = ['DataNotificacao', 'Confirmados', 'Obitos', 'Curas']
         columns_renames = {'Confirmados': 'Casos',
                            'Obitos': 'Óbitos', 'Curas': 'Curas'}
+
+    query_municipio = f'Municipio == "{municipio}"'
+    query_bairro = f'Bairro == "{bairro}"'
+
+    if municipio != None:
+        df = df.query(query_municipio)
+
+        if bairro != None:
+            df = df.query(query_bairro)
 
     df_acumulados = df[columns]\
         .groupby(['DataNotificacao'])\
@@ -57,7 +66,14 @@ def get_figAreaAcumulados(tipo='acumulado'):
         )
     )
 
-    figAreaAcumulados.update_layout(title="Evolução Total do Espírito Santo", autosize=True, margin={
+    titulo = "Espírito Santo"
+
+    if municipio != None:
+        titulo = municipio
+        if bairro != None:
+            titulo += f' / {bairro}'
+
+    figAreaAcumulados.update_layout(title=titulo, autosize=True, margin={
                                     't': 50, 'r': 0, 'b': 50, 'l': 50})
 
     return figAreaAcumulados

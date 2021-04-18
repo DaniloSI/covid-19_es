@@ -6,67 +6,47 @@ from ..data import df_municipios
 from components.database import DataBase
 
 
-def get_figScatterCasosObitosAcumulado():
+def get_figScatter(tipo='casos-obitos'):
     df = DataBase.get_df()
 
-    figScatterCasosObitosAcumulado = px.scatter(
-        df.groupby(['DataNotificacao', 'Municipio'])
-        .sum()
-        .reset_index()
-        .drop_duplicates('Municipio', keep='last')
-        .sort_values('ConfirmadosAcumulado'),
-        x='ObitosAcumulado',
-        y='ConfirmadosAcumulado',
-        color='Municipio',
-        size='ConfirmadosAcumulado',
-        hover_name='Municipio',
-        hover_data={'Municipio': False},
-        labels={
-            'ObitosAcumulado': 'Óbitos',
-            'ConfirmadosAcumulado': 'Casos',
-            'Municipio': '',
-        },
-        title='Municípios'
-    )
-
-    figScatterCasosObitosAcumulado.update_layout(
-        autosize=True, margin={'t': 50, 'r': 0, 'b': 50, 'l': 50})
-
-    return figScatterCasosObitosAcumulado
-
-
-def get_figScatterIncidenciaLetalidade():
-    df = DataBase.get_df()
-
-    df_scatter_inc_let = df.groupby(['DataNotificacao', 'Municipio'])\
+    df_scatter = df.groupby(['DataNotificacao', 'Municipio'])\
         .sum()\
         .reset_index()\
         .drop_duplicates('Municipio', keep='last')\
         .merge(df_municipios, on='Municipio', how='left')
 
-    df_scatter_inc_let['Incidencia'] = round(
-        df_scatter_inc_let['ConfirmadosAcumulado'] * 10000 / df_scatter_inc_let['PopulacaoEstimada'], 1)
-    df_scatter_inc_let['Letalidade'] = round(
-        df_scatter_inc_let['ObitosAcumulado'] * 100.0 / df_scatter_inc_let['ConfirmadosAcumulado'], 2)
+    df_scatter['Incidencia'] = round(
+        df_scatter['ConfirmadosAcumulado'] * 10000 / df_scatter['PopulacaoEstimada'], 1)
+    df_scatter['Letalidade'] = round(
+        df_scatter['ObitosAcumulado'] * 100.0 / df_scatter['ConfirmadosAcumulado'], 2)
 
-    df_scatter_inc_let = df_scatter_inc_let.dropna()\
+    df_scatter = df_scatter.dropna()\
         .sort_values('Incidencia')
 
-    figScatterIncidenciaLetalidade = px.scatter(
-        df_scatter_inc_let, x='Letalidade',
-        y='Incidencia',
+    if tipo == 'casos-obitos':
+        df_scatter = df_scatter.sort_values('ConfirmadosAcumulado')
+        x = 'ObitosAcumulado'
+        y = 'ConfirmadosAcumulado'
+        columns_renames = {'ObitosAcumulado': 'Óbitos',
+                           'ConfirmadosAcumulado': 'Casos', 'Municipio': ''}
+    else:
+        x = 'Letalidade'
+        y = 'Incidencia'
+        columns_renames = {'Incidencia': 'Incidência', 'Municipio': ''}
+
+    figScatter = px.scatter(
+        df_scatter,
+        x=x,
+        y=y,
         color='Municipio',
-        size='Incidencia',
+        size=y,
         hover_name='Municipio',
         hover_data={'Municipio': False},
-        labels={
-            'Incidencia': 'Incidência',
-            'Municipio': '',
-        },
+        labels=columns_renames,
         title='Municípios'
     )
 
-    figScatterIncidenciaLetalidade.update_layout(
+    figScatter.update_layout(
         autosize=True, margin={'t': 50, 'r': 0, 'b': 50, 'l': 50})
 
-    return figScatterIncidenciaLetalidade
+    return figScatter

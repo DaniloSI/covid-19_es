@@ -19,6 +19,8 @@ class DataBase():
         print('Carregando dados...')
         DataBase._df = pd.DataFrame(
             list(DataBase._client.db.dados.find({}, {'_id': 0})))
+        # DataBase._df = pd.read_csv(
+        #     '../notebooks/microdados_pre-processed.csv', sep=',', encoding='UTF-8')
         print('Dados carregados.')
         print('----- # -----')
 
