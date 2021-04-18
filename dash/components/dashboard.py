@@ -44,14 +44,25 @@ def get_indicator(title, value, reference, subtitle='', subsubtitle='', maior_me
     return fig
 
 
-def get_figIndicator(propriedade, label, maior_melhor=False):
+def get_figIndicator(propriedade, label, subtitle='Em todo o período', subsubtitle='', maior_melhor=False, total=True):
     df = DataBase.get_df()
-    atual = int(df[propriedade].sum())
-    ultima_data = df['DataNotificacao'].max()
-    anterior = int(df.query(
-        f'DataNotificacao != "{ultima_data}"')[propriedade].sum())
 
-    return get_indicator(label, atual, anterior, 'Em todo o estado', maior_melhor=maior_melhor)
+    if total:
+        atual = int(df[propriedade].sum())
+        ultima_data = df['DataNotificacao'].max()
+        anterior = int(df.query(
+            f'DataNotificacao != "{ultima_data}"')[propriedade].sum())
+    else:
+        ultima_data = df['DataNotificacao'].max()
+        penultima_data = df.query(f'DataNotificacao != "{ultima_data}"')[
+            'DataNotificacao'].max()
+
+        atual = df.query(f'DataNotificacao == "{ultima_data}"')[
+            propriedade].sum()
+        anterior = df.query(f'DataNotificacao == "{penultima_data}"')[
+            propriedade].sum()
+
+    return get_indicator(label, atual, anterior, subtitle=subtitle, maior_melhor=maior_melhor)
 
 
 def date_interval_text():
@@ -205,7 +216,7 @@ class Dashboard():
                                         dbc.Row([
                                             dbc.Col(
                                                 dcc.Graph(
-                                                    id="indicador-confirmados",
+                                                    id="indicador-confirmados-total",
                                                     figure=get_figIndicator(
                                                         'Confirmados', 'Casos')
                                                 ),
@@ -213,7 +224,7 @@ class Dashboard():
                                             ),
                                             dbc.Col(
                                                 dcc.Graph(
-                                                    id="indicador-obitos",
+                                                    id="indicador-obitos-total",
                                                     figure=get_figIndicator(
                                                         'Obitos', 'Óbitos')
                                                 ),
@@ -221,9 +232,40 @@ class Dashboard():
                                             ),
                                             dbc.Col(
                                                 dcc.Graph(
-                                                    id="indicador-curas",
+                                                    id="indicador-curas-total",
                                                     figure=get_figIndicator(
                                                         'Curas', 'Curados', maior_melhor=True)
+                                                ),
+                                                style={'padding': 0}
+                                            ),
+                                        ])
+                                    ),
+                                    className="m-1"
+                                ),
+                                dbc.Card(
+                                    dbc.CardBody(
+                                        dbc.Row([
+                                            dbc.Col(
+                                                dcc.Graph(
+                                                    id="indicador-confirmados",
+                                                    figure=get_figIndicator(
+                                                        'Confirmados', 'Casos', subtitle='Nos últimos 7 dias', total=False)
+                                                ),
+                                                style={'padding': 0}
+                                            ),
+                                            dbc.Col(
+                                                dcc.Graph(
+                                                    id="indicador-obitos",
+                                                    figure=get_figIndicator(
+                                                        'Obitos', 'Óbitos', subtitle='Nos últimos 7 dias', total=False)
+                                                ),
+                                                style={'padding': 0}
+                                            ),
+                                            dbc.Col(
+                                                dcc.Graph(
+                                                    id="indicador-curas",
+                                                    figure=get_figIndicator(
+                                                        'Curas', 'Curados', subtitle='Nos últimos 7 dias', maior_melhor=True, total=False)
                                                 ),
                                                 style={'padding': 0}
                                             ),
