@@ -149,10 +149,13 @@ class Dashboard():
                                             )
                                         ]),
                                         dbc.CardBody(
-                                            dcc.Graph(
-                                                id='acumulados',
-                                                figure=get_figAreaAcumulados()
-                                            ),
+                                            dcc.Loading(
+                                                dcc.Graph(
+                                                    id='acumulados',
+                                                    figure=get_figAreaAcumulados()
+                                                ),
+                                                type='dot'
+                                            )
                                         ),
                                     ],
                                     className="m-1"
@@ -180,10 +183,13 @@ class Dashboard():
                                             )
                                         ]),
                                         dbc.CardBody(
-                                            dcc.Graph(
-                                                id='scatter-municipios',
-                                                figure=get_figScatter()
-                                            ),
+                                            dcc.Loading(
+                                                dcc.Graph(
+                                                    id='scatter-municipios',
+                                                    figure=get_figScatter()
+                                                ),
+                                                type='dot'
+                                            )
                                         ),
                                     ],
                                     className="m-1"
@@ -217,7 +223,7 @@ class Dashboard():
                                                 dcc.Graph(
                                                     id="indicador-curas",
                                                     figure=get_figIndicator(
-                                                        'Curas', 'Curas', maior_melhor=True)
+                                                        'Curas', 'Curados', maior_melhor=True)
                                                 ),
                                                 style={'padding': 0}
                                             ),
