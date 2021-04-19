@@ -4,7 +4,7 @@ import plotly.graph_objects as go
 from components.database import DataBase
 
 
-def get_figAreaAcumulados(tipo='acumulado', municipio=None, bairro=None):
+def get_figAreaAcumulados(tipo='semanal', municipio=None, bairro=None):
     df = DataBase.get_df()
     figAreaAcumulados = go.Figure()
 

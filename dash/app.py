@@ -44,6 +44,7 @@ app.layout = Dashboard.get_dashboard
         Input("select-evolucao-municipios", "value"),
         Input("select-evolucao-bairros", "value"),
     ],
+    prevent_initial_call=True
 )
 def on_evolucao_change(tipo, municipio, bairro):
     return get_figAreaAcumulados(tipo, municipio, bairro)
@@ -56,6 +57,7 @@ def on_evolucao_change(tipo, municipio, bairro):
         Output("select-evolucao-bairros", "value"),
     ],
     Input("select-evolucao-municipios", "value"),
+    prevent_initial_call=True
 )
 def on_evolucao_change(municipio):
     if municipio != None:
@@ -74,6 +76,7 @@ def on_evolucao_change(municipio):
 @app.callback(
     Output("scatter-municipios", "figure"),
     Input("radioitems-scatter", "value"),
+    prevent_initial_call=True
 )
 def on_evolucao_change(tipo):
     return get_figScatter(tipo)
