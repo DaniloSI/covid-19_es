@@ -108,9 +108,9 @@ class Dashboard():
         Dashboard._dashboard = dbc.Container(
             [
                 html.Div(html.A(html.Img(src='assets/img/GitHub-Mark-32px.png'),
-                                href="https://github.com/DaniloSI/covid-19_es", target="_blank", style={'marginRight': 10}), style={'position': 'absolute', 'right': 0, 'top': 30}),
+                                href="https://github.com/DaniloSI/covid-19_es", target="_blank", style={'marginRight': 10}), style={'display': 'flex', 'justify-content': 'flex-end'}),
                 html.H3('Covid-19 no Espírito Santo',
-                        style={'textAlign': "center", 'fontWeight': 400, 'margin': '25px 0px 0px 0px'}),
+                        style={'textAlign': "center", 'fontWeight': 400}),
                 html.H6(date_interval_text(),
                         style={'textAlign': "center", 'fontWeight': 200, 'margin': '10px 0px 25px 0px'}),
                 dbc.Row(
@@ -118,24 +118,92 @@ class Dashboard():
                         dbc.Col(
                             [
                                 dbc.Card(
+                                    dbc.CardBody(
+                                        dbc.Row([
+                                            dbc.Col(
+                                                dcc.Graph(
+                                                    id="indicador-confirmados-total",
+                                                    figure=get_figIndicator(
+                                                        'Confirmados', 'Casos')
+                                                ),
+                                                style={'padding': 0},
+                                                sm=12,
+                                                md=4
+                                            ),
+                                            dbc.Col(
+                                                dcc.Graph(
+                                                    id="indicador-obitos-total",
+                                                    figure=get_figIndicator(
+                                                        'Obitos', 'Óbitos')
+                                                ),
+                                                style={'padding': 0},
+                                                sm=12,
+                                                md=4
+                                            ),
+                                            dbc.Col(
+                                                dcc.Graph(
+                                                    id="indicador-curas-total",
+                                                    figure=get_figIndicator(
+                                                        'Curas', 'Curados', maior_melhor=True)
+                                                ),
+                                                style={'padding': 0},
+                                                sm=12,
+                                                md=4
+                                            ),
+                                        ])
+                                    ),
+                                    className="mb-2"
+                                ),
+                                dbc.Card(
+                                    dbc.CardBody(
+                                        dbc.Row([
+                                            dbc.Col(
+                                                dcc.Graph(
+                                                    id="indicador-confirmados",
+                                                    figure=get_figIndicator(
+                                                        'Confirmados', 'Casos', subtitle='Nos últimos 7 dias', total=False)
+                                                ),
+                                                style={'padding': 0},
+                                                sm=12,
+                                                md=4
+                                            ),
+                                            dbc.Col(
+                                                dcc.Graph(
+                                                    id="indicador-obitos",
+                                                    figure=get_figIndicator(
+                                                        'Obitos', 'Óbitos', subtitle='Nos últimos 7 dias', total=False)
+                                                ),
+                                                style={'padding': 0},
+                                                sm=12,
+                                                md=4
+                                            ),
+                                            dbc.Col(
+                                                dcc.Graph(
+                                                    id="indicador-curas",
+                                                    figure=get_figIndicator(
+                                                        'Curas', 'Curados', subtitle='Nos últimos 7 dias', maior_melhor=True, total=False)
+                                                ),
+                                                style={'padding': 0},
+                                                sm=12,
+                                                md=4
+                                            ),
+                                        ])
+                                    ),
+                                    className="mb-2"
+                                ),
+                                get_rowChoropleph()
+                            ],
+                            className="pr-lg-1",
+                            md=12,
+                            lg=6
+                        ),
+                        dbc.Col(
+                            [
+                                dbc.Card(
                                     [
                                         dbc.CardHeader([
                                             dbc.Row(
                                                 [
-                                                    dbc.Col(
-                                                        dbc.RadioItems(
-                                                            id="radioitems-evolucao",
-                                                            options=[
-                                                                {"label": "Semanal",
-                                                                    "value": 'semanal'},
-                                                                {"label": "Acumulado",
-                                                                    "value": 'acumulado'},
-                                                            ],
-                                                            value='semanal',
-                                                            inline=True
-                                                        ),
-                                                        width=3
-                                                    ),
                                                     dbc.Col(
                                                         dcc.Dropdown(
                                                             id="select-evolucao-municipios",
@@ -154,7 +222,21 @@ class Dashboard():
                                                             disabled=True
                                                         ),
                                                         xs=True
-                                                    )
+                                                    ),
+                                                    dbc.Col(
+                                                        dbc.RadioItems(
+                                                            id="radioitems-evolucao",
+                                                            options=[
+                                                                {"label": "Semanal",
+                                                                    "value": 'semanal'},
+                                                                {"label": "Acumulado",
+                                                                    "value": 'acumulado'},
+                                                            ],
+                                                            value='semanal',
+                                                            inline=True
+                                                        ),
+                                                        width=3
+                                                    ),
                                                 ],
                                                 align="center"
                                             )
@@ -169,7 +251,7 @@ class Dashboard():
                                             )
                                         ),
                                     ],
-                                    className="m-1"
+                                    className="mb-2"
                                 ),
                                 dbc.Card(
                                     [
@@ -203,82 +285,15 @@ class Dashboard():
                                             )
                                         ),
                                     ],
-                                    className="m-1"
+                                    className="mb-2"
                                 )
                             ],
-                            className="pr-0",
-                            width=6
-                        ),
-                        dbc.Col(
-                            [
-                                dbc.Card(
-                                    dbc.CardBody(
-                                        dbc.Row([
-                                            dbc.Col(
-                                                dcc.Graph(
-                                                    id="indicador-confirmados-total",
-                                                    figure=get_figIndicator(
-                                                        'Confirmados', 'Casos')
-                                                ),
-                                                style={'padding': 0}
-                                            ),
-                                            dbc.Col(
-                                                dcc.Graph(
-                                                    id="indicador-obitos-total",
-                                                    figure=get_figIndicator(
-                                                        'Obitos', 'Óbitos')
-                                                ),
-                                                style={'padding': 0}
-                                            ),
-                                            dbc.Col(
-                                                dcc.Graph(
-                                                    id="indicador-curas-total",
-                                                    figure=get_figIndicator(
-                                                        'Curas', 'Curados', maior_melhor=True)
-                                                ),
-                                                style={'padding': 0}
-                                            ),
-                                        ])
-                                    ),
-                                    className="m-1"
-                                ),
-                                dbc.Card(
-                                    dbc.CardBody(
-                                        dbc.Row([
-                                            dbc.Col(
-                                                dcc.Graph(
-                                                    id="indicador-confirmados",
-                                                    figure=get_figIndicator(
-                                                        'Confirmados', 'Casos', subtitle='Nos últimos 7 dias', total=False)
-                                                ),
-                                                style={'padding': 0}
-                                            ),
-                                            dbc.Col(
-                                                dcc.Graph(
-                                                    id="indicador-obitos",
-                                                    figure=get_figIndicator(
-                                                        'Obitos', 'Óbitos', subtitle='Nos últimos 7 dias', total=False)
-                                                ),
-                                                style={'padding': 0}
-                                            ),
-                                            dbc.Col(
-                                                dcc.Graph(
-                                                    id="indicador-curas",
-                                                    figure=get_figIndicator(
-                                                        'Curas', 'Curados', subtitle='Nos últimos 7 dias', maior_melhor=True, total=False)
-                                                ),
-                                                style={'padding': 0}
-                                            ),
-                                        ])
-                                    ),
-                                    className="m-1"
-                                ),
-                                get_rowChoropleph()
-                            ],
-                            className="pl-0",
-                            width=6
+                            className="pl-lg-1",
+                            md=12,
+                            lg=6
                         )
-                    ]
+                    ],
+                    className="no-gutters"
                 ),
             ],
             fluid=True,

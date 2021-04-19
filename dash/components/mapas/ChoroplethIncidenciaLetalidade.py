@@ -92,10 +92,10 @@ def get_rowChoropleph():
                             ),
                         ),
                     ],
-                    className="m-1"
+                    className="mb-2"
                 ),
                 md=6,
-                className="pr-0"
+                className="pr-md-1"
             ),
             dbc.Col(
                 dbc.Card(
@@ -107,10 +107,11 @@ def get_rowChoropleph():
                             ),
                         ),
                     ],
-                    className="m-1"
+                    className="mb-2"
                 ),
                 md=6,
-                className="pl-0"
+                className="pl-md-1"
             ),
-        ]
+        ],
+        className="no-gutters"
     )
