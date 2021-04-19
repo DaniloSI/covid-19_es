@@ -4,7 +4,7 @@ from pymongo import MongoClient, ReplaceOne
 
 
 print('Obtendo Microdados...')
-url = 'https://bi.static.es.gov.br/covid19/MICRODADOS.csv'
+url = 'https://bi.s3.es.gov.br/covid19/MICRODADOS.zip'
 df = pd.read_csv(url, sep=';', encoding='cp1252')
 
 
