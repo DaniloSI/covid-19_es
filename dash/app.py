@@ -11,7 +11,8 @@ import dash_bootstrap_components as dbc
 import dash_html_components as html
 from dash.dependencies import Input, Output
 from components.graficos.Evolucao import get_figAreaAcumulados
-from components.graficos.ScatterMunicipio import get_figScatter
+from components.graficos.Scatter import get_figScatter
+from components.mapas.Choropleth import get_figChoropleph
 
 app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
 
@@ -59,7 +60,7 @@ def on_evolucao_change(tipo, municipio, bairro):
     Input("select-evolucao-municipios", "value"),
     prevent_initial_call=True
 )
-def on_evolucao_change(municipio):
+def on_municipio_change(municipio):
     if municipio != None:
         query_municipio = f'Municipio == "{municipio}"'
         bairros = DataBase.get_df()[['Municipio', 'Bairro']].query(
@@ -78,8 +79,19 @@ def on_evolucao_change(municipio):
     Input("radioitems-scatter", "value"),
     prevent_initial_call=True
 )
-def on_evolucao_change(tipo):
+def on_scatter_change(tipo):
     return get_figScatter(tipo)
+
+
+@app.callback(
+    Output("choropleth", "figure"),
+    Input("radioitems-choropleth", "value"),
+    prevent_initial_call=True
+)
+def on_choropleth_change(tipo):
+    return get_figChoropleph(tipo)
+
+# radioitems-choropleth
 
 
 if __name__ == '__main__':

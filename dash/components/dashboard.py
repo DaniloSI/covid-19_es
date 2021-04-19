@@ -7,8 +7,8 @@ from datetime import datetime
 import plotly.graph_objects as go
 
 from components.graficos.Evolucao import get_figAreaAcumulados
-from components.graficos.ScatterMunicipio import get_figScatter
-from components.mapas.ChoroplethIncidenciaLetalidade import get_rowChoropleph
+from components.graficos.Scatter import get_figScatter
+from components.mapas.Choropleth import get_figChoropleph
 
 from components.database import DataBase
 
@@ -191,7 +191,38 @@ class Dashboard():
                                     ),
                                     className="mb-2"
                                 ),
-                                get_rowChoropleph()
+                                dbc.Card(
+                                    [
+                                        dbc.CardHeader(
+                                            dbc.RadioItems(
+                                                id="radioitems-choropleth",
+                                                options=[
+                                                    {'label': 'Incidência',
+                                                        'value': 'Incidencia'},
+                                                    {'label': 'Letalidade',
+                                                        'value': 'Letalidade'},
+                                                    {'label': 'Confirmados',
+                                                        'value': 'ConfirmadosAcumulado'},
+                                                    {'label': 'Óbitos',
+                                                        'value': 'ObitosAcumulado'},
+                                                ],
+                                                value='Incidencia',
+                                                inline=True,
+                                            )
+                                        ),
+                                        dbc.CardBody(
+                                            dcc.Loading(
+                                                dcc.Graph(
+                                                    id='choropleth',
+                                                    figure=get_figChoropleph(
+                                                        'Incidencia')
+                                                ),
+                                                type='dot'
+                                            )
+                                        ),
+                                    ],
+                                    className="mb-2"
+                                )
                             ],
                             className="pr-lg-1",
                             md=12,

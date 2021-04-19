@@ -74,7 +74,7 @@ def get_figAreaAcumulados(tipo='semanal', municipio=None, bairro=None):
             titulo += f' / {bairro}'
 
     figAreaAcumulados.update_layout(title=titulo, autosize=True, margin={
-                                    't': 50, 'r': 0, 'b': 50, 'l': 50})
+                                    't': 50, 'r': 0, 'b': 50, 'l': 50}, title_x=0.5)
 
     figAreaAcumulados.update_layout(
         xaxis=dict(
