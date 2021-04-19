@@ -109,7 +109,7 @@ def get_figChoropleph(propriedade):
             'Mes': 'Mês Relativo'
         },
         animation_frame='Mes',
-        title=label,
+        title=f'Acumulado de {label}',
     )
 
     figChoropleth.update_geos(
