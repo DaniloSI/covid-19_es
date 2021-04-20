@@ -137,6 +137,7 @@ class Choropleth():
         Choropleth._choropleths['ObitosAcumulado'] = get_figChoropleph(
             df_choropleph, 'ObitosAcumulado')
 
+    @staticmethod
     def get_figChoropleph(propriedade):
         if len(Choropleth._choropleths) == 0:
             Choropleth.render()
