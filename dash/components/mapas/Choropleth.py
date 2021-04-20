@@ -62,27 +62,7 @@ def get_color_scale(propriedade):
     return px.colors.sequential.Magma[::-1]
 
 
-def get_figChoropleph(propriedade):
-    df = DataBase.get_df()
-
-    df_choropleph = df.groupby(['DataNotificacao', 'Municipio'])\
-        .sum()\
-        .reset_index()\
-        .merge(df_municipios, on='Municipio', how='left')
-
-    df_choropleph['Incidencia'] = round(
-        df_choropleph['ConfirmadosAcumulado'] * 10000 / df_choropleph['PopulacaoEstimada'], 1)
-    df_choropleph['Letalidade'] = round(
-        df_choropleph['ObitosAcumulado'] * 1.0 / df_choropleph['ConfirmadosAcumulado'], 4)
-
-    df_choropleph = df_choropleph[df_choropleph['PopulacaoEstimada'] >= 0]
-    df_choropleph['DataNotificacao'] = pd.to_datetime(
-        df_choropleph['DataNotificacao'])
-
-    reference_date = df_choropleph['DataNotificacao'].min()
-    df_choropleph['Mes'] = df_choropleph['DataNotificacao'].apply(
-        lambda d: relative_month(reference_date, d))
-
+def get_figChoropleph(df_choropleph, propriedade):
     label = get_label(propriedade)
     propriedade_equivalente = get_equivalente(propriedade)
     label_equivalente = get_label(propriedade_equivalente)
@@ -121,3 +101,44 @@ def get_figChoropleph(propriedade):
         figChoropleth.frames) - 1
 
     return go.Figure(data=figChoropleth['frames'][-1]['data'], frames=figChoropleth['frames'], layout=figChoropleth.layout)
+
+
+class Choropleth():
+    _choropleths = {}
+
+    @staticmethod
+    def render():
+        df = DataBase.get_df()
+
+        df_choropleph = df.groupby(['DataNotificacao', 'Municipio'])\
+            .sum()\
+            .reset_index()\
+            .merge(df_municipios, on='Municipio', how='left')
+
+        df_choropleph['Incidencia'] = round(
+            df_choropleph['ConfirmadosAcumulado'] * 10000 / df_choropleph['PopulacaoEstimada'], 1)
+        df_choropleph['Letalidade'] = round(
+            df_choropleph['ObitosAcumulado'] * 1.0 / df_choropleph['ConfirmadosAcumulado'], 4)
+
+        df_choropleph = df_choropleph[df_choropleph['PopulacaoEstimada'] >= 0]
+        df_choropleph['DataNotificacao'] = pd.to_datetime(
+            df_choropleph['DataNotificacao'])
+
+        reference_date = df_choropleph['DataNotificacao'].min()
+        df_choropleph['Mes'] = df_choropleph['DataNotificacao'].apply(
+            lambda d: relative_month(reference_date, d))
+
+        Choropleth._choropleths['Incidencia'] = get_figChoropleph(
+            df_choropleph, 'Incidencia')
+        Choropleth._choropleths['Letalidade'] = get_figChoropleph(
+            df_choropleph, 'Letalidade')
+        Choropleth._choropleths['ConfirmadosAcumulado'] = get_figChoropleph(
+            df_choropleph, 'ConfirmadosAcumulado')
+        Choropleth._choropleths['ObitosAcumulado'] = get_figChoropleph(
+            df_choropleph, 'ObitosAcumulado')
+
+    def get_figChoropleph(propriedade):
+        if len(Choropleth._choropleths) == 0:
+            Choropleth.render()
+
+        return Choropleth._choropleths[propriedade]

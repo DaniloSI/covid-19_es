@@ -8,7 +8,7 @@ import plotly.graph_objects as go
 
 from components.graficos.Evolucao import get_figAreaAcumulados
 from components.graficos.Scatter import get_figScatter
-from components.mapas.Choropleth import get_figChoropleph
+from components.mapas.Choropleth import Choropleth
 
 from components.database import DataBase
 
@@ -214,7 +214,7 @@ class Dashboard():
                                             dcc.Loading(
                                                 dcc.Graph(
                                                     id='choropleth',
-                                                    figure=get_figChoropleph(
+                                                    figure=Choropleth.get_figChoropleph(
                                                         'Incidencia')
                                                 ),
                                                 type='dot'

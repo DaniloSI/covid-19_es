@@ -12,7 +12,7 @@ import dash_html_components as html
 from dash.dependencies import Input, Output
 from components.graficos.Evolucao import get_figAreaAcumulados
 from components.graficos.Scatter import get_figScatter
-from components.mapas.Choropleth import get_figChoropleph
+from components.mapas.Choropleth import Choropleth
 
 app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
 
@@ -22,6 +22,7 @@ server = app.server
 def data_update():
     DataBase.refresh()
     Dashboard.render()
+    Choropleth.render()
 
 
 schedule.every(20).minutes.do(data_update)
@@ -89,7 +90,7 @@ def on_scatter_change(tipo):
     prevent_initial_call=True
 )
 def on_choropleth_change(tipo):
-    return get_figChoropleph(tipo)
+    return Choropleth.get_figChoropleph(tipo)
 
 # radioitems-choropleth
 
