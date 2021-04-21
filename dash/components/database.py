@@ -6,8 +6,7 @@ from datetime import datetime, timedelta
 class DataBase():
     _usr = 'danilosi'
     _pwd = 'QRGrkX9BvrgRWi2O'
-    _str_conn = f'mongodb+srv://{_usr}:{_pwd}@covid-19-es.nuzlk.mongodb.net/myFirstDatabase?retryWrites=true&w=majority'
-    _client = MongoClient(_str_conn)
+    _str_conn = f'mongodb+srv://{_usr}:{_pwd}@covid-19-es.nuzlk.mongodb.net/db?retryWrites=true&w=majority'
     _executed_first = False
     _df = None
 
@@ -17,8 +16,10 @@ class DataBase():
         # query_filter = {'DataNotificacao': {"$gte": from_date}}
         print('----- # -----')
         print('Carregando dados...')
-        DataBase._df = pd.DataFrame(
-            list(DataBase._client.db.dados.find({}, {'_id': 0})))
+        with MongoClient(DataBase._str_conn) as client:
+            cursor = client.db.dados.find({}, {'_id': 0})
+            print(f'Carregando um total de {cursor.count()} registros')
+            DataBase._df = pd.DataFrame(list(cursor))
         # DataBase._df = pd.read_csv(
         #     '../notebooks/microdados_pre-processed.csv', sep=',', encoding='UTF-8')
         print('Dados carregados.')
