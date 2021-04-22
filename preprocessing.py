@@ -1,7 +1,7 @@
 import pandas as pd
 from unidecode import unidecode
 from pymongo import MongoClient, ReplaceOne
-
+from sys import argv
 
 print('Obtendo Microdados...')
 url = 'https://bi.s3.es.gov.br/covid19/MICRODADOS.zip'
@@ -81,7 +81,7 @@ df_counts.fillna(
 )
 
 columns_sum = ['Confirmados', 'Obitos', 'Curas']
-df_counts_by_week = df_counts.groupby(['Municipio', 'Bairro', pd.Grouper(key='DataNotificacao', freq='W-MON')])[columns_sum]\
+df_counts_by_week = df_counts.groupby(['Municipio', 'Bairro', pd.Grouper(key='DataNotificacao', freq='7D')])[columns_sum]\
     .sum()\
     .reset_index()\
     .sort_values('DataNotificacao')
@@ -100,8 +100,8 @@ df_counts_by_week['CurasAcumulado'] = df_counts_by_week[['Municipio', 'Bairro', 
 
 print('Preparando para salvar o DataFrame resultante...')
 # Persiste o DataFrame
-usr = 'danilosi'
-pwd = 'QRGrkX9BvrgRWi2O'
+usr = argv[1]
+pwd = argv[2]
 str_conn = f'mongodb+srv://{usr}:{pwd}@covid-19-es.nuzlk.mongodb.net/myFirstDatabase?retryWrites=true&w=majority'
 client = MongoClient(str_conn)
 

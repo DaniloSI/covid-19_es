@@ -1,15 +1,18 @@
 name: pre-processing
 
 on:
-  # push:
-  #   branches:
-  #     - master
+  push:
+    branches:
+      - master
   schedule:
     - cron: "0 */6 * * *"
 
 jobs:
   build:
     runs-on: windows-latest
+    env:
+      USR: ${{ secrets.MONGODB_USR }}
+      PWD: ${{ secrets.MONGODB_PWD }}
     steps:
       - name: checkout repo content
         uses: actions/checkout@v2 # checkout the repository content to github runner
@@ -25,5 +28,4 @@ jobs:
           pip install -r requirements.txt
 
       - name: run preprocessing
-        run: |
-          python preprocessing.py
+        run: python preprocessing.py $env:USR $env:PWD
