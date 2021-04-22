@@ -23,26 +23,15 @@ df['Bairro'] = df['Bairro'].apply(lambda x: unidecode(str(x)).upper())
 
 print('Calculando casos, óbitos e curas...')
 # Calcula o total diário de confirmados
-df['Confirmados'] = df[['Municipio', 'Bairro', 'DataNotificacao']]\
-    .groupby(['Municipio', 'Bairro', 'DataNotificacao'])\
-    .cumcount() + 1
-
-# Calcula o total diário de óbitos
 df['Obitos'] = df['Evolucao'].apply(
-    lambda evolucao: 1 if evolucao == 'Óbito pelo COVID-19' else 0)
+    lambda e: 1 if e == 'Óbito pelo COVID-19' else 0)
+df['Confirmados'] = 1
+df['Curas'] = df['Evolucao'].apply(lambda e: 1 if e == 'Cura' else 0)
 
-df['Obitos'] = df[['Municipio', 'Bairro', 'DataNotificacao', 'Obitos']]\
+df = df[['Municipio', 'Bairro', 'DataNotificacao', 'Obitos', 'Confirmados', 'Curas']]\
     .groupby(['Municipio', 'Bairro', 'DataNotificacao'])\
-    .cumsum()
-
-
-# Calcula o total diário e acumulado de curas
-df['Curas'] = df['Evolucao'].apply(
-    lambda evolucao: 1 if evolucao == 'Cura' else 0)
-
-df['Curas'] = df[['Municipio', 'Bairro', 'DataNotificacao', 'Curas']]\
-    .groupby(['Municipio', 'Bairro', 'DataNotificacao'])\
-    .cumsum()
+    .sum()\
+    .reset_index()
 
 
 # Contagem de Casos, Óbitos e Curas
