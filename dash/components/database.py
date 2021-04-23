@@ -1,11 +1,12 @@
 import pandas as pd
 from pymongo import MongoClient
 from datetime import datetime, timedelta
+import os
 
 
 class DataBase():
-    _usr = 'danilosi'
-    _pwd = 'QRGrkX9BvrgRWi2O'
+    _usr = os.environ['MONGODB_USR']
+    _pwd = os.environ['MONGODB_PWD']
     _str_conn = f'mongodb+srv://{_usr}:{_pwd}@covid-19-es.nuzlk.mongodb.net/db?retryWrites=true&w=majority'
     _executed_first = False
     _df = None

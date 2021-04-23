@@ -4,13 +4,15 @@ from pymongo import MongoClient, ReplaceOne
 from sys import argv
 
 print('Obtendo Microdados...')
-url = 'https://bi.s3.es.gov.br/covid19/MICRODADOS.zip'
+# url = 'https://bi.s3.es.gov.br/covid19/MICRODADOS.zip'
+url = 'MICRODADOS.zip'
 df = pd.read_csv(url, sep=';', encoding='cp1252')
 
 
 print('Realizando a conversão de data e selecionando os casos confirmados...')
 # Converte a data e seleciona os casos confirmados
 df['DataNotificacao'] = pd.to_datetime(df['DataNotificacao'])
+df['DataObito'] = pd.to_datetime(df['DataObito'])
 df.sort_values('DataNotificacao', inplace=True)
 df = df.query('Classificacao == "Confirmados"').reset_index(drop=True)
 
@@ -22,19 +24,6 @@ df['Bairro'] = df['Bairro'].apply(lambda x: unidecode(str(x)).upper())
 
 
 print('Calculando casos, óbitos e curas...')
-# Calcula o total diário de confirmados
-df['Obitos'] = df['Evolucao'].apply(
-    lambda e: 1 if e == 'Óbito pelo COVID-19' else 0)
-df['Confirmados'] = 1
-df['Curas'] = df['Evolucao'].apply(lambda e: 1 if e == 'Cura' else 0)
-
-df = df[['Municipio', 'Bairro', 'DataNotificacao', 'Obitos', 'Confirmados', 'Curas']]\
-    .groupby(['Municipio', 'Bairro', 'DataNotificacao'])\
-    .sum()\
-    .reset_index()
-
-
-# Contagem de Casos, Óbitos e Curas
 grupo_base = ['DataNotificacao', 'Municipio', 'Bairro']
 
 datas = df[['DataNotificacao']].drop_duplicates().reset_index(drop=True)
@@ -44,30 +33,28 @@ municipios_bairros = df[['Municipio', 'Bairro']
 datas['key'] = 0
 municipios_bairros['key'] = 0
 
-df_counts = pd.merge(datas, municipios_bairros, how='outer')[grupo_base]
+# Calcula o total diário de confirmados
+df['Confirmados'] = 1
+df['Curas'] = df['Evolucao'].apply(lambda e: 1 if e == 'Cura' else 0)
+df['Obitos'] = df['Evolucao'].apply(
+    lambda e: 1 if e == 'Óbito pelo COVID-19' else 0)
 
-df_counts = df_counts.merge(
-    df[[
-        'Municipio',
-        'Bairro',
-        'DataNotificacao',
-        'Confirmados',
-        'Obitos',
-        'Curas',
-    ]].drop_duplicates(grupo_base, keep='last')
-    .dropna(),
+df_confirmados_curas = df[['Municipio', 'Bairro', 'DataNotificacao', 'Confirmados', 'Curas']]\
+    .groupby(['Municipio', 'Bairro', 'DataNotificacao'])\
+    .sum()\
+    .reset_index()
+
+df_obitos = df[['Municipio', 'Bairro', 'DataObito', 'Obitos']]\
+    .groupby(['Municipio', 'Bairro', 'DataObito'])\
+    .sum()\
+    .reset_index()\
+    .rename({'DataObito': 'DataNotificacao'}, axis=1)
+
+df_counts = df_confirmados_curas.merge(
+    df_obitos,
     on=grupo_base,
     how='left'
-)
-
-df_counts.fillna(
-    {
-        'Confirmados': 0,
-        'Obitos': 0,
-        'Curas': 0,
-    },
-    inplace=True
-)
+).fillna(0)
 
 columns_sum = ['Confirmados', 'Obitos', 'Curas']
 df_counts_by_week = df_counts.groupby(['Municipio', 'Bairro', pd.Grouper(key='DataNotificacao', freq='7D')])[columns_sum]\
