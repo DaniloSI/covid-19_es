@@ -81,33 +81,12 @@ pwd = argv[2]
 str_conn = f'mongodb+srv://{usr}:{pwd}@covid-19-es.nuzlk.mongodb.net/myFirstDatabase?retryWrites=true&w=majority'
 client = MongoClient(str_conn)
 
-ids = list(map(lambda x_id: x_id['_id'], list(
-    client.db.dados.find({}, {'_id': 1}))))
-
-df_counts_by_week['_id'] = pd.Series(ids)
-df_counts_by_week['_id'].fillna('', inplace=True)
-
 df_counts_by_week_dict = df_counts_by_week.to_dict(orient='records')
 
+print('Deletando banco de dados existente...')
+client.drop_database('db')
 
-def delete_ids_empty(item):
-    if (item['_id'] == ''):
-        del item['_id']
-    return item
-
-
-df_counts_by_week_dict = list(map(delete_ids_empty, df_counts_by_week_dict))
-
-print('Fazendo replace dos dados existentes...')
-to_replace = list(
-    filter(lambda row: '_id' in row.keys(), df_counts_by_week_dict))
-if len(to_replace) > 0:
-    client.db.dados.bulk_write(
-        list(map(lambda row: ReplaceOne(
-            {'_id': row['_id']}, row, upsert=True), to_replace))
-    )
-
-print('Fazendo inserindo novos dados...')
+print('Inserindo novos dados...')
 to_insert = list(
     filter(lambda row: '_id' not in row.keys(), df_counts_by_week_dict))
 if len(to_insert) > 0:
