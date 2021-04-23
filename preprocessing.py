@@ -53,7 +53,7 @@ df_obitos = df[['Municipio', 'Bairro', 'DataObito', 'Obitos']]\
 df_counts = df_confirmados_curas.merge(
     df_obitos,
     on=grupo_base,
-    how='left'
+    how='outer'
 ).fillna(0)
 
 columns_sum = ['Confirmados', 'Obitos', 'Curas']
@@ -87,9 +87,7 @@ print('Deletando banco de dados existente...')
 client.drop_database('db')
 
 print('Inserindo novos dados...')
-to_insert = list(
-    filter(lambda row: '_id' not in row.keys(), df_counts_by_week_dict))
 if len(to_insert) > 0:
-    client.db.dados.insert_many(to_insert)
+    client.db.dados.insert_many(df_counts_by_week_dict)
 
 print('Fim')
