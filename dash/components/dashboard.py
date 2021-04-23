@@ -12,6 +12,10 @@ from components.mapas.Choropleth import Choropleth
 
 from components.database import DataBase
 
+import urllib
+import json
+from datetime import datetime, timedelta
+
 
 def get_indicator(title, value, reference, subtitle='', subsubtitle='', maior_melhor=False):
     fig = go.Figure()
@@ -66,19 +70,15 @@ def get_figIndicator(propriedade, label, subtitle='Em todo o período', subsubti
 
 
 def date_interval_text():
-    str_format = '%d/%m/%Y'
-    data_notificacao = DataBase.get_df()['DataNotificacao']
+    url = 'https://api.github.com/repos/danilosi/covid-19_es/actions/runs?page=0&per_page=1&status=success'
+    response = urllib.request.urlopen(url)
+    data = json.loads(response.read())
+    datetime_utc = data['workflow_runs'][0]['updated_at']
 
-    if type(data_notificacao.min()) != str:
-        data_primeira_notificacao = data_notificacao.min().strftime(str_format)
-        data_ultima_notificacao = data_notificacao.max().strftime(str_format)
-    else:
-        data_primeira_notificacao = datetime.fromisoformat(
-            data_notificacao.min()).strftime(str_format)
-        data_ultima_notificacao = datetime.fromisoformat(
-            data_notificacao.max()).strftime(str_format)
+    data_ultima_atualizacao = (datetime.fromisoformat(
+        datetime_utc.replace('Z', '')) - timedelta(hours=3)).strftime('%d/%m/%Y %H:%M')
 
-    return f'De {data_primeira_notificacao} até {data_ultima_notificacao}'
+    return f'Última atualização: {data_ultima_atualizacao}'
 
 
 def total_casos_es():
