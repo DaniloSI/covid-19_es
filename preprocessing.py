@@ -87,7 +87,7 @@ print('Deletando banco de dados existente...')
 client.drop_database('db')
 
 print('Inserindo novos dados...')
-if len(to_insert) > 0:
+if len(df_counts_by_week_dict) > 0:
     client.db.dados.insert_many(df_counts_by_week_dict)
 
 print('Fim')
