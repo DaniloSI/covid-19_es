@@ -56,6 +56,24 @@ df_counts = df_confirmados_curas.merge(
     how='outer'
 ).fillna(0)
 
+df_datas_municipios = pd.merge(
+    datas, municipios_bairros, how='outer')[grupo_base]
+
+df_counts = df_datas_municipios.merge(
+    df_counts,
+    on=grupo_base,
+    how='left'
+)
+
+df_counts.fillna(
+    {
+        'Confirmados': 0,
+        'Obitos': 0,
+        'Curas': 0,
+    },
+    inplace=True
+)
+
 columns_sum = ['Confirmados', 'Obitos', 'Curas']
 df_counts_by_week = df_counts.groupby(['Municipio', 'Bairro', pd.Grouper(key='DataNotificacao', freq='7D')])[columns_sum]\
     .sum()\
