@@ -1,6 +1,15 @@
-# COVID-19 no Espírito Santo
+<div align="center">
+  <h1>COVID-19 no Espírito Santo</h1>
+</div>
 
-[![pre-processing](https://github.com/DaniloSI/covid-19_es/actions/workflows/preprocessing.yml/badge.svg?event=schedule)](https://github.com/DaniloSI/covid-19_es/actions/workflows/preprocessing.yml)
+<div align="center">
+  <!-- Pre-processing Status -->
+  <a href="https://github.com/DaniloSI/covid-19_es/actions/workflows/preprocessing.yml">
+    <img src="https://github.com/DaniloSI/covid-19_es/actions/workflows/preprocessing.yml/badge.svg?event=schedule" alt="Pre-processing" />
+  </a>
+  <br />
+  <br />
+</div>
 
 O presente projeto foi desenvolvido como parte de um TCC, para a obtenção do grau de Bacharelado em Sistemas de Informação, no Ifes Campus Serra.
 
