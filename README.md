@@ -75,8 +75,6 @@ Significado de cada pasta e item do projeto:
 
 O projeto foi totalmente desenvolvido utilizando o sistema operacional Linux Ubuntu 20.04.1 LTS. Portanto, alguns comandos aplicados ao terminal, devem ser substituídos por seus equivalentes, de acordo com o sistema operacional utilizado.
 
-Execute os comandos sem utilizar o trecho "$: ". Esse trecho apenas indica que trata-se de um novo comando a ser executado.
-
 ### Pré-Requisitos
 
 Para executar o projeto localmente, é preciso que os seguintes itens estejam instalados em sua máquina:
@@ -90,27 +88,36 @@ Para executar o projeto localmente, é preciso que os seguintes itens estejam in
 1. Clone o repositório do projeto e entre na pasta, usando os seguintes comandos:
 
 ```
-$: git clone https://github.com/DaniloSI/covid-19_es.git
-$: cd covid-19_es
+git clone https://github.com/DaniloSI/covid-19_es.git
 ```
+```
+cd covid-19_es
+```
+
 2. Instale o **virtualenv**, caso não o tenha instalado, utilizando os seguintes comandos:
 
 ```
-$: sudo apt-get update
-$: sudo apt-get install python3-virtualenv
+sudo apt-get update
+```
+
+```
+sudo apt-get install python3-virtualenv
 ```
 
 3. Crie e ative um ambiente virtual com os seguintes comandos:
 
 ```
-$: python3 -m venv venv/
-$: source venv/bin/activate
+python3 -m venv venv/
+```
+
+```
+source venv/bin/activate
 ```
 
 4. Instale as dependências do projeto com o seguinte comando:
 
 ```
-$: pip3 install -r requirements.txt
+pip3 install -r requirements.txt
 ```
 
 ### Executando o Dash Localmente
@@ -118,13 +125,13 @@ $: pip3 install -r requirements.txt
 1. Acesse a pasta dash com o seguinte comando:
 
 ```
-$: cd dash
+cd dash
 ```
 
 2. Coloque o dash em execução através do seguinte comando:
 
 ```
-$: python3 app.py
+python3 app.py
 ```
 
 Após executar localmente, será possível acessar o dashboard através da url **localhost:8050**.
