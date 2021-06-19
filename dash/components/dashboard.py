@@ -226,7 +226,7 @@ class Dashboard():
                             ],
                             className="pr-lg-1",
                             md=12,
-                            lg=6
+                            lg=5
                         ),
                         dbc.Col(
                             [
@@ -256,7 +256,7 @@ class Dashboard():
                                                     ),
                                                     dbc.Col(
                                                         dbc.RadioItems(
-                                                            id="radioitems-evolucao",
+                                                            id="radioitems-evolucao-periodo",
                                                             options=[
                                                                 {"label": "Semanal",
                                                                     "value": 'semanal'},
@@ -266,7 +266,23 @@ class Dashboard():
                                                             value='semanal',
                                                             inline=True
                                                         ),
-                                                        width=3
+                                                        width=2
+                                                    ),
+                                                    dbc.Col(
+                                                        dbc.RadioItems(
+                                                            id="radioitems-evolucao-variavel",
+                                                            options=[
+                                                                {"label": "Confirmados",
+                                                                    "value": 'confirmados'},
+                                                                {"label": "Óbitos",
+                                                                    "value": 'obitos'},
+                                                                {"label": "Curas",
+                                                                    "value": 'curas'},
+                                                            ],
+                                                            value='confirmados',
+                                                            inline=True
+                                                        ),
+                                                        width=2
                                                     ),
                                                 ],
                                                 align="center"
@@ -321,7 +337,7 @@ class Dashboard():
                             ],
                             className="pl-lg-1",
                             md=12,
-                            lg=6
+                            lg=7
                         )
                     ],
                     className="no-gutters"

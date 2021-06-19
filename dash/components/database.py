@@ -4,12 +4,19 @@ from datetime import datetime, timedelta
 import os
 
 
+def get_str_conn():
+    if 'MODE' in os.environ and os.environ['MODE'] == 'development':
+        return 'mongodb://localhost'
+
+    usr = os.environ['MONGODB_USR']
+    pwd = os.environ['MONGODB_PWD']
+
+    return f'mongodb+srv://{usr}:{pwd}@covid-19-es.nuzlk.mongodb.net/db?retryWrites=true&w=majority'
+
 class DataBase():
-    _usr = os.environ['MONGODB_USR']
-    _pwd = os.environ['MONGODB_PWD']
-    _str_conn = f'mongodb+srv://{_usr}:{_pwd}@covid-19-es.nuzlk.mongodb.net/db?retryWrites=true&w=majority'
     _executed_first = False
     _df = None
+    _str_conn = get_str_conn()
 
     @staticmethod
     def fech():

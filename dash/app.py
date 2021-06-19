@@ -40,16 +40,25 @@ app.layout = Dashboard.get_dashboard
 
 
 @app.callback(
-    Output("acumulados", "figure"),
     [
-        Input("radioitems-evolucao", "value"),
+        Output("acumulados", "figure"),
+        Output(component_id="radioitems-evolucao-variavel", component_property='style'),
+    ],
+    [
+        Input("radioitems-evolucao-periodo", "value"),
+        Input("radioitems-evolucao-variavel", "value"),
         Input("select-evolucao-municipios", "value"),
         Input("select-evolucao-bairros", "value"),
     ],
     prevent_initial_call=True
 )
-def on_evolucao_change(tipo, municipio, bairro):
-    return get_figAreaAcumulados(tipo, municipio, bairro)
+def on_evolucao_change(periodo, variavel, municipio, bairro):
+    display = {'display': 'none'}
+
+    if periodo == 'semanal':
+        display = {'display': 'block'}
+
+    return get_figAreaAcumulados(periodo, variavel, municipio, bairro), display
 
 
 @app.callback(
