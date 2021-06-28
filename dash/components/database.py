@@ -25,9 +25,9 @@ class DataBase():
         print('----- # -----')
         print('Carregando dados...')
         with MongoClient(DataBase._str_conn) as client:
-            cursor = client.db.dados.find({}, {'_id': 0})
-            print(f'Carregando um total de {cursor.count()} registros')
-            DataBase._df = pd.DataFrame(list(cursor))
+            collection = client.db.dados
+            print(f'Carregando um total de {collection.count_documents({})} registros')
+            DataBase._df = pd.DataFrame(list(collection.find({}, {'_id': 0})))
         # DataBase._df = pd.read_csv(
         #     '../notebooks/microdados_pre-processed.csv', sep=',', encoding='UTF-8')
         print('Dados carregados.')

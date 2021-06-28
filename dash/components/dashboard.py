@@ -6,8 +6,10 @@ import dash_bootstrap_components as dbc
 from datetime import datetime
 import plotly.graph_objects as go
 
+from components.filtros.Select import dropdown_municipios
 from components.graficos.Evolucao import get_figAreaAcumulados
 from components.graficos.Scatter import get_figScatter
+from components.graficos.Treemap import treemap_bairros
 from components.mapas.Choropleth import Choropleth
 
 from components.database import DataBase
@@ -15,58 +17,6 @@ from components.database import DataBase
 import urllib
 import json
 from datetime import datetime, timedelta
-
-
-def get_indicator(title, value, reference, subtitle='', subsubtitle='', maior_melhor=False):
-    fig = go.Figure()
-
-    colors = {
-        'red': '#FF4136',
-        'green': '#3D9970',
-    }
-
-    fig.add_trace(
-        go.Indicator(
-            mode="number+delta",
-            value=value,
-            title={"text": f"{title}<br><span style='font-size:0.8em;color:gray'>{subtitle}</span><br><span style='font-size:0.8em;color:gray'>{subsubtitle}</span>"},
-            delta={
-                'reference': reference,
-                'relative': True,
-                'increasing': {
-                    'color': colors['red' if not maior_melhor else 'green']
-                },
-                'decreasing': {
-                    'color': colors['red' if maior_melhor else 'green']
-                }
-            },
-        )
-    )
-
-    fig.update_layout(height=170, margin={'t': 80, 'l': 10, 'b': 10, 'r': 10})
-
-    return fig
-
-
-def get_figIndicator(propriedade, label, subtitle='Em todo o período', subsubtitle='', maior_melhor=False, total=True):
-    df = DataBase.get_df()
-
-    if total:
-        atual = int(df[propriedade].sum())
-        ultima_data = df['DataNotificacao'].max()
-        anterior = int(df.query(
-            f'DataNotificacao != "{ultima_data}"')[propriedade].sum())
-    else:
-        ultima_data = df['DataNotificacao'].max()
-        penultima_data = df.query(f'DataNotificacao != "{ultima_data}"')[
-            'DataNotificacao'].max()
-
-        atual = df.query(f'DataNotificacao == "{ultima_data}"')[
-            propriedade].sum()
-        anterior = df.query(f'DataNotificacao == "{penultima_data}"')[
-            propriedade].sum()
-
-    return get_indicator(label, atual, anterior, subtitle=subtitle, maior_melhor=maior_melhor)
 
 
 def date_interval_text():
@@ -101,8 +51,6 @@ class Dashboard():
 
     @staticmethod
     def render():
-        municipios_options = list(map(lambda m: {"label": m, "value": m}, DataBase.get_df()[[
-            'Municipio']].sort_values('Municipio').drop_duplicates()['Municipio'].tolist()))
         print('----- # -----')
         print('Renderizando o Dashboard...')
         Dashboard._dashboard = dbc.Container(
@@ -118,77 +66,44 @@ class Dashboard():
                         dbc.Col(
                             [
                                 dbc.Card(
-                                    dbc.CardBody(
-                                        dbc.Row([
-                                            dbc.Col(
+                                    [
+                                        dbc.CardHeader(
+                                            [
+                                                dbc.Row(
+                                                    [
+                                                        dbc.Col(
+                                                            dropdown_municipios('select-treemap-municipios', True),
+                                                            xs=True
+                                                        ),
+                                                        dbc.Col(
+                                                            dcc.Slider(
+                                                                id='slider_top_n',
+                                                                min=0,
+                                                                max=30,
+                                                                step=1,
+                                                                marks={
+                                                                    10: {'label': 'Top 10 bairros'},
+                                                                    20: {'label': 'Top 20 bairros'},
+                                                                },
+                                                                value=10,
+                                                            ),
+                                                            width=7
+                                                        )
+                                                    ],
+                                                    align="center"
+                                                )
+                                            ]
+                                        ),
+                                        dbc.CardBody(
+                                            dcc.Loading(
                                                 dcc.Graph(
-                                                    id="indicador-confirmados-total",
-                                                    figure=get_figIndicator(
-                                                        'Confirmados', 'Casos')
+                                                    id='treemap',
+                                                    figure=treemap_bairros(20)
                                                 ),
-                                                style={'padding': 0},
-                                                sm=12,
-                                                md=4
-                                            ),
-                                            dbc.Col(
-                                                dcc.Graph(
-                                                    id="indicador-obitos-total",
-                                                    figure=get_figIndicator(
-                                                        'Obitos', 'Óbitos')
-                                                ),
-                                                style={'padding': 0},
-                                                sm=12,
-                                                md=4
-                                            ),
-                                            dbc.Col(
-                                                dcc.Graph(
-                                                    id="indicador-curas-total",
-                                                    figure=get_figIndicator(
-                                                        'Curas', 'Curados', maior_melhor=True)
-                                                ),
-                                                style={'padding': 0},
-                                                sm=12,
-                                                md=4
-                                            ),
-                                        ])
-                                    ),
-                                    className="mb-2"
-                                ),
-                                dbc.Card(
-                                    dbc.CardBody(
-                                        dbc.Row([
-                                            dbc.Col(
-                                                dcc.Graph(
-                                                    id="indicador-confirmados",
-                                                    figure=get_figIndicator(
-                                                        'Confirmados', 'Casos', subtitle='Nos últimos 7 dias', total=False)
-                                                ),
-                                                style={'padding': 0},
-                                                sm=12,
-                                                md=4
-                                            ),
-                                            dbc.Col(
-                                                dcc.Graph(
-                                                    id="indicador-obitos",
-                                                    figure=get_figIndicator(
-                                                        'Obitos', 'Óbitos', subtitle='Nos últimos 7 dias', total=False)
-                                                ),
-                                                style={'padding': 0},
-                                                sm=12,
-                                                md=4
-                                            ),
-                                            dbc.Col(
-                                                dcc.Graph(
-                                                    id="indicador-curas",
-                                                    figure=get_figIndicator(
-                                                        'Curas', 'Curados', subtitle='Nos últimos 7 dias', maior_melhor=True, total=False)
-                                                ),
-                                                style={'padding': 0},
-                                                sm=12,
-                                                md=4
-                                            ),
-                                        ])
-                                    ),
+                                                type='dot'
+                                            )
+                                        ),
+                                    ],
                                     className="mb-2"
                                 ),
                                 dbc.Card(
@@ -236,12 +151,7 @@ class Dashboard():
                                             dbc.Row(
                                                 [
                                                     dbc.Col(
-                                                        dcc.Dropdown(
-                                                            id="select-evolucao-municipios",
-                                                            options=municipios_options,
-                                                            value=None,
-                                                            placeholder="Selecione um município",
-                                                        ),
+                                                        dropdown_municipios('select-evolucao-municipios'),
                                                         xs=True
                                                     ),
                                                     dbc.Col(
@@ -258,12 +168,12 @@ class Dashboard():
                                                         dbc.RadioItems(
                                                             id="radioitems-evolucao-periodo",
                                                             options=[
-                                                                {"label": "Semanal",
-                                                                    "value": 'semanal'},
                                                                 {"label": "Acumulado",
                                                                     "value": 'acumulado'},
+                                                                {"label": "Semanal",
+                                                                    "value": 'semanal'},
                                                             ],
-                                                            value='semanal',
+                                                            value='acumulado',
                                                             inline=True
                                                         ),
                                                         width=2

@@ -105,7 +105,10 @@ def get_figAreaAcumulados(periodo='semanal', variavel='confirmados', municipio=N
             )
         )
 
-    titulo = f'Espírito Santo ({variavel})'
+    titulo = 'Espírito Santo'
+
+    if periodo != 'acumulado':
+        titulo = f'{titulo} ({variavel})'
 
     if municipio != None:
         titulo = municipio
