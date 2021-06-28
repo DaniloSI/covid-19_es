@@ -12,6 +12,7 @@ import dash_html_components as html
 from dash.dependencies import Input, Output
 from components.graficos.Evolucao import get_figAreaAcumulados
 from components.graficos.Scatter import get_figScatter
+from components.graficos.Treemap import treemap_bairros
 from components.mapas.Choropleth import Choropleth
 
 app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
@@ -50,7 +51,6 @@ app.layout = Dashboard.get_dashboard
         Input("select-evolucao-municipios", "value"),
         Input("select-evolucao-bairros", "value"),
     ],
-    prevent_initial_call=True
 )
 def on_evolucao_change(periodo, variavel, municipio, bairro):
     display = {'display': 'none'}
@@ -82,6 +82,17 @@ def on_municipio_change(municipio):
             return options_bairros, False, None
 
     return [], True, None
+
+@app.callback(
+    Output("treemap", "figure"),
+    [
+        Input("select-treemap-municipios", "value"),
+        Input("slider_top_n", "value"),
+    ],
+    prevent_initial_call=True
+)
+def on_municipios_change(municipios, top_n):
+    return treemap_bairros(municipios, top_n)
 
 
 @app.callback(

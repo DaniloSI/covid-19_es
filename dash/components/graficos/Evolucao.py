@@ -6,7 +6,7 @@ from components.util import colors
 from datetime import date, timedelta
 
 
-def get_figAreaAcumulados(periodo='semanal', variavel='confirmados', municipio=None, bairro=None):
+def get_figAreaAcumulados(periodo='acumulado', variavel='confirmados', municipio=None, bairro=None):
     df = DataBase.get_df()
     fig = go.Figure()
 

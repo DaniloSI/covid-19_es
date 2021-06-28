@@ -1,8 +1,17 @@
 import plotly.express as px
 from components.database import DataBase
 
-def treemap_bairros(top_n):
-    bairros = DataBase.get_df().sort_values(by=['DataNotificacao', 'ConfirmadosAcumulado'], ascending=False)\
+def treemap_bairros(municipios=[], top_n=20):
+    def get_df():
+        df = DataBase.get_df()
+
+        if municipios != None and len(municipios) > 0:
+            return df[df['Municipio'].isin(municipios)]
+        
+        return df
+    
+    bairros = get_df()\
+        .sort_values(by=['DataNotificacao', 'ConfirmadosAcumulado'], ascending=False)\
         .drop_duplicates(subset=['Municipio', 'Bairro'])\
         .head(top_n)
     

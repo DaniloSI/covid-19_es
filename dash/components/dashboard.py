@@ -85,6 +85,9 @@ class Dashboard():
                                                                     10: {'label': 'Top 10 bairros'},
                                                                     20: {'label': 'Top 20 bairros'},
                                                                 },
+                                                                tooltip={
+                                                                    'placement': 'top'
+                                                                },
                                                                 value=10,
                                                             ),
                                                             width=7
@@ -98,7 +101,7 @@ class Dashboard():
                                             dcc.Loading(
                                                 dcc.Graph(
                                                     id='treemap',
-                                                    figure=treemap_bairros(20)
+                                                    figure=treemap_bairros()
                                                 ),
                                                 type='dot'
                                             )
