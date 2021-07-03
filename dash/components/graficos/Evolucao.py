@@ -5,35 +5,69 @@ from components.database import DataBase
 from components.util import colors
 from datetime import date, timedelta
 
-
-def get_figAreaAcumulados(periodo='acumulado', variavel='confirmados', municipio=None, bairro=None):
+def _get_df(municipio, bairro):
     df = DataBase.get_df()
-    fig = go.Figure()
-
-    if periodo == 'acumulado':
-        columns = ['DataNotificacao', 'ConfirmadosAcumulado',
-                   'ObitosAcumulado', 'CurasAcumulado']
-        columns_renames = {'ConfirmadosAcumulado': 'Confirmados',
-                           'ObitosAcumulado': 'Óbitos', 'CurasAcumulado': 'Curas'}
-    else:
-        columns = ['DataNotificacao', 'Confirmados', 'Obitos', 'Curas']
-        columns_renames = {'Confirmados': 'Confirmados',
-                           'Obitos': 'Óbitos', 'Curas': 'Curas'}
-
-    query_municipio = f'Municipio == "{municipio}"'
-    query_bairro = f'Bairro == "{bairro}"'
 
     if municipio != None:
-        df = df.query(query_municipio)
-
+        df = df.query(f'Municipio == "{municipio}"')
         if bairro != None:
-            df = df.query(query_bairro)
+            df = df.query(f'Bairro == "{bairro}"')
+    
+    return df
 
-    df_acumulados = df[columns]\
-        .groupby(['DataNotificacao'])\
+def _acumulado(municipio, bairro):
+    fig = go.Figure()
+    
+    df = _get_df(municipio, bairro)[['DataNotificacao', 'ConfirmadosAcumulado', 'ObitosAcumulado', 'CurasAcumulado']]\
+        .groupby('DataNotificacao')\
         .sum()\
-        .reset_index()\
-        .rename(columns_renames, axis=1)
+        .reset_index()
+    
+    df.columns = ['Data', 'Confirmados', 'Óbitos', 'Curas']
+    
+    scatter = lambda v, color: go.Scatter(
+        x = df['Data'],
+        y = df[v],
+        name = v,
+        line = dict(width = 2.5, color = color)
+    )
+    
+    fig.add_trace(scatter('Confirmados', colors['red']))
+    fig.add_trace(scatter('Óbitos', colors['black']))
+    fig.add_trace(scatter('Curas', colors['green']))
+
+    fig.update_layout(
+        plot_bgcolor="white",
+        xaxis=dict(
+            rangemode="tozero",
+            showline=True,
+            showgrid=False,
+            linecolor='rgb(204, 204, 204)',
+            linewidth=2,
+        ),
+        yaxis=dict(
+            rangemode="tozero",
+            showline=True,
+            showgrid=False,
+            linecolor='rgb(204, 204, 204)',
+            linewidth=2,
+        ),
+        legend=dict(
+            x = 0.5,
+            xanchor = 'center',
+            orientation = 'h'
+        )
+    )
+
+    return fig
+
+def _semanal(municipio, bairro, variavel):
+    df = _get_df(municipio, bairro)[['DataNotificacao', 'Confirmados', 'Obitos', 'Curas']]\
+        .groupby('DataNotificacao')\
+        .sum()\
+        .reset_index()
+
+    df.columns = ['Data', 'Confirmados', 'Óbitos', 'Curas']
 
     if variavel == 'confirmados':
         variavel = 'Confirmados'
@@ -55,55 +89,35 @@ def get_figAreaAcumulados(periodo='acumulado', variavel='confirmados', municipio
         pattern = '%d/%m/%Y'
 
         return f'Consolidado de {data_inicio.strftime(pattern)} a {data_fim.strftime(pattern)}'
+    
+    fig = go.Figure(go.Bar(
+        x=df['Data'],
+        y=df[variavel],
+        marker_color=cor,
+        name=variavel,
+        text=df['Data'].apply(get_data_interval).tolist(),
+        hovertemplate=
+            "<b>%{text}</b><br>" +
+            variavel + ": %{y}" +
+            "<extra></extra>",
+    ))
 
-    if periodo == 'acumulado':
-        fig.add_trace(
-            go.Scatter(
-                x=df_acumulados['DataNotificacao'],
-                y=df_acumulados['Confirmados'],
-                fill='tozeroy',
-                fillcolor=colors['red_transparent'],
-                line_color=colors['red'],
-                name='Confirmados',
-            )
+    fig.update_layout(
+        xaxis=dict(
+            rangeslider=dict(
+                visible=True
+            ),
+            type="date"
         )
+    )
 
-        fig.add_trace(
-            go.Scatter(
-                x=df_acumulados['DataNotificacao'],
-                y=df_acumulados['Curas'],
-                fill='tozeroy',
-                # fillcolor=f'rgba{(114, 219, 197, 0.6)}',
-                fillcolor=colors['green_transparent'],
-                line_color=colors['green'],
-                name='Curas',
-            )
-        )
+    return fig
+    
 
-        fig.add_trace(
-            go.Scatter(
-                x=df_acumulados['DataNotificacao'],
-                y=df_acumulados['Óbitos'],
-                fill='tozeroy',
-                fillcolor=colors['black_transparent'],
-                line_color=colors['black'],
-                name='Óbitos',
-            )
-        )
-    else:
-        fig.add_trace(
-            go.Bar(
-                x=df_acumulados['DataNotificacao'],
-                y=df_acumulados[variavel],
-                marker_color=cor,
-                name=variavel,
-                text=df_acumulados['DataNotificacao'].apply(get_data_interval).tolist(),
-                hovertemplate=
-                    "<b>%{text}</b><br>" +
-                    variavel + ": %{y}" +
-                    "<extra></extra>",
-            )
-        )
+def evolucao(periodo='acumulado', variavel='confirmados', municipio=None, bairro=None):
+    fig = go.Figure()
+
+    fig = _acumulado(municipio, bairro) if periodo == 'acumulado' else _semanal(municipio, bairro, variavel)
 
     titulo = 'Espírito Santo'
 
@@ -115,23 +129,13 @@ def get_figAreaAcumulados(periodo='acumulado', variavel='confirmados', municipio
         if bairro != None:
             titulo += f' / {bairro}'
 
-    fig.update_layout(title=titulo, autosize=True, margin={
-                                    't': 50, 'r': 0, 'b': 50, 'l': 50}, title_x=0.5)
+    fig.update_layout(title=titulo, autosize=True, margin={'t': 50, 'r': 0, 'b': 50, 'l': 50}, title_x=0.5)
     
     fig.update_layout(
         hoverlabel=dict(
             bgcolor="white",
             font_size=16,
             font_family="Arial"
-        )
-    )
-
-    fig.update_layout(
-        xaxis=dict(
-            rangeslider=dict(
-                visible=True
-            ),
-            type="date"
         )
     )
 

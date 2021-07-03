@@ -7,7 +7,7 @@ from datetime import datetime
 import plotly.graph_objects as go
 
 from components.filtros.Select import dropdown_municipios
-from components.graficos.Evolucao import get_figAreaAcumulados
+from components.graficos.Evolucao import evolucao
 from components.graficos.Scatter import get_figScatter
 from components.graficos.Treemap import treemap
 from components.mapas.Choropleth import Choropleth
@@ -205,7 +205,7 @@ class Dashboard():
                                             dcc.Loading(
                                                 dcc.Graph(
                                                     id='acumulados',
-                                                    figure=get_figAreaAcumulados()
+                                                    figure=evolucao()
                                                 ),
                                                 type='dot'
                                             )

@@ -10,7 +10,7 @@ from components.dashboard import Dashboard
 import dash_bootstrap_components as dbc
 import dash_html_components as html
 from dash.dependencies import Input, Output
-from components.graficos.Evolucao import get_figAreaAcumulados
+from components.graficos.Evolucao import evolucao
 from components.graficos.Scatter import get_figScatter
 from components.graficos.Treemap import treemap
 from components.mapas.Choropleth import Choropleth
@@ -58,7 +58,7 @@ def on_evolucao_change(periodo, variavel, municipio, bairro):
     if periodo == 'semanal':
         display = {'display': 'block'}
 
-    return get_figAreaAcumulados(periodo, variavel, municipio, bairro), display
+    return evolucao(periodo, variavel, municipio, bairro), display
 
 
 @app.callback(
