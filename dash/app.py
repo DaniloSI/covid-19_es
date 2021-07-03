@@ -12,7 +12,7 @@ import dash_html_components as html
 from dash.dependencies import Input, Output
 from components.graficos.Evolucao import get_figAreaAcumulados
 from components.graficos.Scatter import get_figScatter
-from components.graficos.Treemap import treemap_bairros
+from components.graficos.Treemap import treemap
 from components.mapas.Choropleth import Choropleth
 
 app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
@@ -91,8 +91,8 @@ def on_municipio_change(municipio):
     ],
     prevent_initial_call=True
 )
-def on_municipios_change(municipios, top_n):
-    return treemap_bairros(municipios, top_n)
+def on_municipios_change(municipio, top_n):
+    return treemap(municipio, top_n)
 
 
 @app.callback(

@@ -9,7 +9,7 @@ import plotly.graph_objects as go
 from components.filtros.Select import dropdown_municipios
 from components.graficos.Evolucao import get_figAreaAcumulados
 from components.graficos.Scatter import get_figScatter
-from components.graficos.Treemap import treemap_bairros
+from components.graficos.Treemap import treemap
 from components.mapas.Choropleth import Choropleth
 
 from components.database import DataBase
@@ -72,7 +72,7 @@ class Dashboard():
                                                 dbc.Row(
                                                     [
                                                         dbc.Col(
-                                                            dropdown_municipios('select-treemap-municipios', True),
+                                                            dropdown_municipios('select-treemap-municipios'),
                                                             xs=True
                                                         ),
                                                         dbc.Col(
@@ -101,7 +101,7 @@ class Dashboard():
                                             dcc.Loading(
                                                 dcc.Graph(
                                                     id='treemap',
-                                                    figure=treemap_bairros()
+                                                    figure=treemap()
                                                 ),
                                                 type='dot'
                                             )
