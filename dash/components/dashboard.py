@@ -82,12 +82,10 @@ class Dashboard():
                                                                 max=30,
                                                                 step=1,
                                                                 marks={
-                                                                    10: {'label': 'Top 10 bairros'},
-                                                                    20: {'label': 'Top 20 bairros'},
+                                                                    10: {'label': 'Top 10'},
+                                                                    20: {'label': 'Top 20'},
                                                                 },
-                                                                tooltip={
-                                                                    'placement': 'top'
-                                                                },
+                                                                tooltip={'placement': 'top'},
                                                                 value=10,
                                                             ),
                                                             width=7

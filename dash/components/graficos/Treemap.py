@@ -1,28 +1,29 @@
 import plotly.graph_objects as go
 from components.database import DataBase
 
+def _make_treemap(df):
+    return go.Treemap(
+        labels = df['Label'].tolist(),
+        parents = df['Parent'].tolist(),
+        values = df['Value'].tolist(),
+        textinfo = 'label+value',
+    )
+
 def _treemap_municipios(top_n):
     df_treemap = DataBase.get_df()[['Municipio', 'Confirmados']]\
         .groupby('Municipio')\
         .sum()\
-        .reset_index()
+        .reset_index()\
+        .sort_values('Confirmados', ascending=False)\
+        .head(top_n)
+
     df_treemap.columns = ['Label', 'Value']
     df_treemap['Parent'] = ''
     
-    df_treemap = df_treemap.sort_values('Value', ascending=False)\
-        .head(top_n)
-    
-    return go.Treemap(
-        labels = df_treemap['Label'].tolist(),
-        parents = df_treemap['Parent'].tolist(),
-        values = df_treemap['Value'].tolist(),
-        texttemplate = '%{label}<br>%{value:d} confirmados',
-        hovertemplate = '%{label}<br>%{value:d} confirmados<extra></extra>'
-    )
+    return _make_treemap(df_treemap)
 
 def _treemap_bairros(municipio, top_n):
     query = f'Municipio == "{municipio}"'
-    # Gera dataframe para dados de municípios
     df_treemap = DataBase.get_df().query(query)[['Municipio', 'Bairro', 'Confirmados']]\
         .groupby(['Municipio', 'Bairro'])\
         .sum()\
@@ -35,18 +36,13 @@ def _treemap_bairros(municipio, top_n):
     df_treemap.columns = ['Parent', 'Label', 'Value']
     df_treemap['Parent'] = ''
     
-    return go.Treemap(
-        labels = df_treemap['Label'].tolist(),
-        parents = df_treemap['Parent'].tolist(),
-        values = df_treemap['Value'].tolist(),
-        textinfo = 'label+value'
-    )
+    return _make_treemap(df_treemap)
 
-def treemap(municipio=None, top_n=20):
+def treemap(municipio=None, top_n=10):
     figure = lambda t, by: go.Figure(t, layout = {
         'title': f'Top {top_n} confirmados por {by}',
         'title_x': 0.5,
-        'margin_t': 50,
+        'margin': { 't': 25, 'r': 0, 'b': 0, 'l': 0 }
     })
     
     if municipio != None and municipio != '':
