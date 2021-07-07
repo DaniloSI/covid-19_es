@@ -15,7 +15,12 @@ from components.graficos.Scatter import get_figScatter
 from components.graficos.Treemap import treemap
 from components.mapas.Choropleth import Choropleth
 
-app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
+external_stylesheets = [
+    dbc.themes.BOOTSTRAP,
+    'https://unpkg.com/@tabler/icons@latest/iconfont/tabler-icons.min.css'
+]
+
+app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 
 server = app.server
 

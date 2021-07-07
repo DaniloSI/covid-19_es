@@ -3,7 +3,6 @@
 import dash_core_components as dcc
 import dash_html_components as html
 import dash_bootstrap_components as dbc
-from datetime import datetime
 import plotly.graph_objects as go
 
 from components.filtros.Select import dropdown_municipios
@@ -11,24 +10,9 @@ from components.graficos.Evolucao import evolucao
 from components.graficos.Scatter import get_figScatter
 from components.graficos.Treemap import treemap
 from components.mapas.Choropleth import Choropleth
+from components.Navbar import navbar
 
 from components.database import DataBase
-
-import urllib
-import json
-from datetime import datetime, timedelta
-
-
-def date_interval_text():
-    url = 'https://api.github.com/repos/danilosi/covid-19_es/actions/runs?page=0&per_page=1&status=success'
-    response = urllib.request.urlopen(url)
-    data = json.loads(response.read())
-    datetime_utc = data['workflow_runs'][0]['updated_at']
-
-    data_ultima_atualizacao = (datetime.fromisoformat(
-        datetime_utc.replace('Z', '')) - timedelta(hours=3)).strftime('%d/%m/%Y %H:%M')
-
-    return f'Última atualização: {data_ultima_atualizacao}'
 
 
 def total_casos_es():
@@ -55,12 +39,7 @@ class Dashboard():
         print('Renderizando o Dashboard...')
         Dashboard._dashboard = dbc.Container(
             [
-                html.Div(html.A(html.Img(src='assets/img/GitHub-Mark-32px.png'),
-                                href="https://github.com/DaniloSI/covid-19_es", target="_blank", style={'marginRight': 10}), style={'display': 'flex', 'justify-content': 'flex-end'}),
-                html.H3('Covid-19 no Espírito Santo',
-                        style={'textAlign': "center", 'fontWeight': 400}),
-                html.H6(date_interval_text(),
-                        style={'textAlign': "center", 'fontWeight': 200, 'margin': '10px 0px 25px 0px'}),
+                navbar(),
                 dbc.Row(
                     [
                         dbc.Col(
