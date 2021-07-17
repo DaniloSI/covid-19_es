@@ -48,7 +48,7 @@ app.layout = Dashboard.get_dashboard
 @app.callback(
     [
         Output("acumulados", "figure"),
-        Output(component_id="radioitems-evolucao-variavel", component_property='style'),
+        Output(component_id="radioitems-evolucao-variavel", component_property='disabled'),
     ],
     [
         Input("radioitems-evolucao-periodo", "value"),
@@ -58,12 +58,7 @@ app.layout = Dashboard.get_dashboard
     ],
 )
 def on_evolucao_change(periodo, variavel, municipio, bairro):
-    display = {'display': 'none'}
-
-    if periodo == 'semanal':
-        display = {'display': 'block'}
-
-    return evolucao(periodo, variavel, municipio, bairro), display
+    return evolucao(periodo, variavel, municipio, bairro), periodo != 'semanal'
 
 
 @app.callback(
@@ -92,12 +87,13 @@ def on_municipio_change(municipio):
     Output("treemap", "figure"),
     [
         Input("select-treemap-municipios", "value"),
-        Input("slider_top_n", "value"),
+        Input("input_top_n", "value"),
+        Input("dropdown-treemap-variavel", "value"),
     ],
     prevent_initial_call=True
 )
-def on_municipios_change(municipio, top_n):
-    return treemap(municipio, top_n)
+def on_municipio_treemap_change(municipio, top_n, variavel):
+    return treemap(municipio, top_n, variavel)
 
 
 @app.callback(
@@ -116,8 +112,6 @@ def on_scatter_change(tipo):
 )
 def on_choropleth_change(tipo):
     return Choropleth.get_figChoropleph(tipo)
-
-# radioitems-choropleth
 
 
 if __name__ == '__main__':

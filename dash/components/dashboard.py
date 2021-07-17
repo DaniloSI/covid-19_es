@@ -51,26 +51,49 @@ class Dashboard():
                                                 dbc.Row(
                                                     [
                                                         dbc.Col(
-                                                            dropdown_municipios('select-treemap-municipios'),
+                                                            dropdown_municipios('select-treemap-municipios', True),
                                                             xs=True
                                                         ),
                                                         dbc.Col(
-                                                            dcc.Slider(
-                                                                id='slider_top_n',
-                                                                min=0,
-                                                                max=30,
-                                                                step=1,
-                                                                marks={
-                                                                    10: {'label': 'Top 10'},
-                                                                    20: {'label': 'Top 20'},
-                                                                },
-                                                                tooltip={'placement': 'top'},
-                                                                value=10,
+                                                            dbc.InputGroup(
+                                                                [
+                                                                    dbc.InputGroupAddon("Top", addon_type="prepend"),
+                                                                    dbc.Input(
+                                                                        id='input_top_n',
+                                                                        type="number",
+                                                                        min=0,
+                                                                        step=1,
+                                                                        value=10
+                                                                    ),
+                                                                ],
                                                             ),
-                                                            width=7
+                                                            width=3,
+                                                            style={
+                                                                'padding-left': '10px'
+                                                            }
+                                                        ),
+                                                        dbc.Col(
+                                                            dcc.Dropdown(
+                                                                id="dropdown-treemap-variavel",
+                                                                options=[
+                                                                    {"label": "Confirmados",
+                                                                        "value": 'Confirmados'},
+                                                                    {"label": "Óbitos",
+                                                                        "value": 'Obitos'},
+                                                                    {"label": "Curas",
+                                                                        "value": 'Curas'},
+                                                                ],
+                                                                value='Confirmados',
+                                                                clearable=False
+                                                            ),
+                                                            width=4,
+                                                            style={
+                                                                'padding-left': '10px'
+                                                            }
                                                         )
                                                     ],
-                                                    align="center"
+                                                    align="center",
+                                                    no_gutters=True
                                                 )
                                             ]
                                         ),
@@ -142,10 +165,13 @@ class Dashboard():
                                                             placeholder="Selecione um bairro",
                                                             disabled=True
                                                         ),
-                                                        xs=True
+                                                        xs=True,
+                                                        style={
+                                                            'padding-left': '10px'
+                                                        }
                                                     ),
                                                     dbc.Col(
-                                                        dbc.RadioItems(
+                                                        dcc.Dropdown(
                                                             id="radioitems-evolucao-periodo",
                                                             options=[
                                                                 {"label": "Acumulado",
@@ -154,12 +180,15 @@ class Dashboard():
                                                                     "value": 'semanal'},
                                                             ],
                                                             value='acumulado',
-                                                            inline=True
+                                                            clearable=False,
                                                         ),
-                                                        width=2
+                                                        width=2,
+                                                        style={
+                                                            'padding-left': '10px'
+                                                        }
                                                     ),
                                                     dbc.Col(
-                                                        dbc.RadioItems(
+                                                        dcc.Dropdown(
                                                             id="radioitems-evolucao-variavel",
                                                             options=[
                                                                 {"label": "Confirmados",
@@ -170,12 +199,17 @@ class Dashboard():
                                                                     "value": 'curas'},
                                                             ],
                                                             value='confirmados',
-                                                            inline=True
+                                                            clearable=False,
+                                                            disabled=True
                                                         ),
-                                                        width=2
-                                                    ),
+                                                        width=4,
+                                                        style={
+                                                            'padding-left': '10px'
+                                                        }
+                                                    )
                                                 ],
-                                                align="center"
+                                                align="center",
+                                                no_gutters=True
                                             )
                                         ]),
                                         dbc.CardBody(
