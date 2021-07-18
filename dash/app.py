@@ -13,6 +13,7 @@ from dash.dependencies import Input, Output
 from components.graficos.Evolucao import evolucao
 from components.graficos.Scatter import get_figScatter
 from components.graficos.Treemap import treemap
+from components.graficos.Indicator import indicators
 from components.mapas.Choropleth import Choropleth
 
 external_stylesheets = [
@@ -94,6 +95,15 @@ def on_municipio_change(municipio):
 )
 def on_municipio_treemap_change(municipio, top_n, variavel):
     return treemap(municipio, top_n, variavel)
+
+
+@app.callback(
+    Output("indicators", "figure"),
+    Input("select-indicators-municipios", "value"),
+    prevent_initial_call=True
+)
+def on_municipio_indicators_change(municipio):
+    return indicators(municipio)
 
 
 @app.callback(

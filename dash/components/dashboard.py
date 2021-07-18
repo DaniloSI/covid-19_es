@@ -9,6 +9,7 @@ from components.filtros.Select import dropdown_municipios
 from components.graficos.Evolucao import evolucao
 from components.graficos.Scatter import get_figScatter
 from components.graficos.Treemap import treemap
+from components.graficos.Indicator import indicators
 from components.mapas.Choropleth import Choropleth
 from components.Navbar import navbar
 
@@ -44,6 +45,7 @@ class Dashboard():
                     [
                         dbc.Col(
                             [
+                                # Treemap
                                 dbc.Card(
                                     [
                                         dbc.CardHeader(
@@ -109,6 +111,7 @@ class Dashboard():
                                     ],
                                     className="mb-2"
                                 ),
+                                # Mapa Coroplético
                                 dbc.Card(
                                     [
                                         dbc.CardHeader(
@@ -148,6 +151,31 @@ class Dashboard():
                         ),
                         dbc.Col(
                             [
+                                # Indicadores
+                                dbc.Card(
+                                    [
+                                        dbc.CardHeader(
+                                            dbc.Row(
+                                                dbc.Col(dropdown_municipios('select-indicators-municipios', True), width=6)
+                                            )
+                                        ),
+                                        dbc.CardBody(
+                                            dbc.Row(
+                                                dbc.Col(
+                                                    dcc.Loading(
+                                                        dcc.Graph(
+                                                            id='indicators',
+                                                            figure=indicators()
+                                                        ),
+                                                        type='dot'
+                                                    )
+                                                )
+                                            )
+                                        )
+                                    ],
+                                    className="mb-2"
+                                ),
+                                # Evolução
                                 dbc.Card(
                                     [
                                         dbc.CardHeader([
@@ -224,6 +252,7 @@ class Dashboard():
                                     ],
                                     className="mb-2"
                                 ),
+                                # Pairplot
                                 dbc.Card(
                                     [
                                         dbc.CardHeader([
