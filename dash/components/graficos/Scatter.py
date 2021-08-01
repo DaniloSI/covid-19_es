@@ -2,12 +2,12 @@
 
 import plotly.express as px
 
-from ..data import df_municipios
 from components.database import DataBase
 
 
 def get_figScatter(tipo='casos-obitos'):
     df = DataBase.get_df()
+    df_municipios = DataBase.get_df_municipios()
 
     df_scatter = df.groupby(['DataNotificacao', 'Municipio'])\
         .sum()\

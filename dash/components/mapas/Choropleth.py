@@ -5,9 +5,10 @@ import dash_core_components as dcc
 import dash_bootstrap_components as dbc
 import plotly.express as px
 import plotly.graph_objects as go
+import json
 
-from ..data import df_municipios, municipios
 from components.database import DataBase
+from components.observer import Subscriber
 
 from datetime import date
 
@@ -70,6 +71,9 @@ def get_figChoropleph(df_choropleph, propriedade):
     color_scale = get_color_scale(propriedade)
     tickformat = get_tickformat(propriedade)
 
+    with open('../data/ES_MALHA_MUNICIPIOS.geojson') as json_file:
+        municipios = json.load(json_file)
+
     figChoropleth = px.choropleth(
         df_choropleph.fillna(0),
         geojson=municipios,
@@ -103,12 +107,13 @@ def get_figChoropleph(df_choropleph, propriedade):
     return go.Figure(data=figChoropleth['frames'][-1]['data'], frames=figChoropleth['frames'], layout=figChoropleth.layout)
 
 
-class Choropleth():
+class Choropleth(Subscriber):
     _choropleths = {}
 
     @staticmethod
-    def render():
+    def update():
         df = DataBase.get_df()
+        df_municipios = DataBase.get_df_municipios()
 
         df_choropleph = df.groupby(['DataNotificacao', 'Municipio'])\
             .sum()\
@@ -140,6 +145,6 @@ class Choropleth():
     @staticmethod
     def get_figChoropleph(propriedade):
         if len(Choropleth._choropleths) == 0:
-            Choropleth.render()
+            Choropleth.update()
 
         return Choropleth._choropleths[propriedade]

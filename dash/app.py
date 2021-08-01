@@ -15,6 +15,7 @@ from components.graficos.Scatter import get_figScatter
 from components.graficos.Treemap import treemap
 from components.graficos.Indicator import indicators
 from components.mapas.Choropleth import Choropleth
+from components.observer import Publisher
 
 external_stylesheets = [
     dbc.themes.BOOTSTRAP,
@@ -25,26 +26,31 @@ app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 
 server = app.server
 
+# Padrão Observer para atualizar os dados e o Dashboard de modo geral.
+publisher = Publisher()
 
-def data_update():
-    DataBase.refresh()
-    Dashboard.render()
-    Choropleth.render()
+publisher.subscribe(DataBase)
+publisher.subscribe(Dashboard)
+publisher.subscribe(Choropleth)
+# end
 
-
-schedule.every(20).minutes.do(data_update)
-
+# Instancia a Thread para executar a atualização do Dashboard periodicamente
+schedule.every(20)\
+    .minutes\
+    .do(publisher.notify_subscribers)
 
 def schedule_update(trhead_name, delay):
     while True:
         schedule.run_pending()
         sleep(delay)
 
-
-start_new_thread(schedule_update, ("Thread-Update", 1))
+start_new_thread(
+    schedule_update,
+    ("Thread-Update", 1)
+)
+# end
 
 app.layout = Dashboard.get_dashboard
-
 
 @app.callback(
     [
@@ -60,7 +66,6 @@ app.layout = Dashboard.get_dashboard
 )
 def on_evolucao_change(periodo, variavel, municipio, bairro):
     return evolucao(periodo, variavel, municipio, bairro), periodo != 'semanal'
-
 
 @app.callback(
     [
@@ -96,7 +101,6 @@ def on_municipio_change(municipio):
 def on_municipio_treemap_change(municipio, top_n, variavel):
     return treemap(municipio, top_n, variavel)
 
-
 @app.callback(
     Output("indicators", "figure"),
     Input("select-indicators-municipios", "value"),
@@ -104,7 +108,6 @@ def on_municipio_treemap_change(municipio, top_n, variavel):
 )
 def on_municipio_indicators_change(municipio):
     return indicators(municipio)
-
 
 @app.callback(
     Output("scatter-municipios", "figure"),
@@ -114,7 +117,6 @@ def on_municipio_indicators_change(municipio):
 def on_scatter_change(tipo):
     return get_figScatter(tipo)
 
-
 @app.callback(
     Output("choropleth", "figure"),
     Input("radioitems-choropleth", "value"),
@@ -122,7 +124,6 @@ def on_scatter_change(tipo):
 )
 def on_choropleth_change(tipo):
     return Choropleth.get_figChoropleph(tipo)
-
 
 if __name__ == '__main__':
     app.run_server(debug=False, use_reloader=False)

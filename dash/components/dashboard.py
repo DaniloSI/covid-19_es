@@ -11,9 +11,10 @@ from components.graficos.Scatter import get_figScatter
 from components.graficos.Treemap import treemap
 from components.graficos.Indicator import indicators
 from components.mapas.Choropleth import Choropleth
-from components.Navbar import navbar
+from components.navbar import navbar
 
 from components.database import DataBase
+from components.observer import Subscriber
 
 
 def total_casos_es():
@@ -31,11 +32,11 @@ def total_curas_es():
     return '{:,}'.format(total_curas).replace(',', '.')
 
 
-class Dashboard():
+class Dashboard(Subscriber):
     _dashboard = None
 
     @staticmethod
-    def render():
+    def update():
         print('----- # -----')
         print('Renderizando o Dashboard...')
         Dashboard._dashboard = dbc.Container(
@@ -305,6 +306,6 @@ class Dashboard():
     @staticmethod
     def get_dashboard():
         if Dashboard._dashboard == None:
-            Dashboard.render()
+            Dashboard.update()
 
         return Dashboard._dashboard

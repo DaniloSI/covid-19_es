@@ -2,6 +2,7 @@ import pandas as pd
 from pymongo import MongoClient
 from datetime import datetime, timedelta
 import os
+from components.observer import Subscriber
 
 
 def get_str_conn():
@@ -13,9 +14,10 @@ def get_str_conn():
 
     return f'mongodb+srv://{usr}:{pwd}@covid-19-es.nuzlk.mongodb.net/db?retryWrites=true&w=majority'
 
-class DataBase():
+class DataBase(Subscriber):
     _executed_first = False
     _df = None
+    _df_municipios = None
     _str_conn = get_str_conn()
 
     @staticmethod
@@ -34,7 +36,7 @@ class DataBase():
         print('----- # -----')
 
     @staticmethod
-    def refresh():
+    def update():
         DataBase.fech()
         now = datetime.now()
         print("Dados atualizados em: ", now.ctime())
@@ -47,3 +49,10 @@ class DataBase():
             DataBase._executed_first = True
 
         return DataBase._df
+    
+    @staticmethod
+    def get_df_municipios():
+        if (DataBase._df_municipios is None):
+            DataBase._df_municipios = pd.read_csv('../data/municipios.csv')
+        
+        return DataBase._df_municipios

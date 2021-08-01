@@ -55,5 +55,5 @@ def navbar():
         brand="Covid-19 | Espírito Santo, Brasil",
         color="#e5e5e5",
         fluid=True,
-        style={'borderRadius': 5, 'marginBottom': 20}
+        style={'borderRadius': 5, 'marginBottom': 20, 'paddingLeft': 0, 'paddingRight': 0}
     )
