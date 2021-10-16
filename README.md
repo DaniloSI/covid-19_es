@@ -71,7 +71,6 @@ O diagrama abaixo apresenta a organização de pastas do projeto.
 ├── notebooks
 │   ├── Análise Exploratória de Dados.ipynb
 │   ├── Data-visualizations.ipynb
-│   ├── Data-visualizations.ipynb.invalid
 │   └── Pre-processing.ipynb
 ├── preprocessing.py
 ├── Procfile
