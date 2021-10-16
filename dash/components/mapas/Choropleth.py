@@ -5,6 +5,8 @@ import dash_core_components as dcc
 import dash_bootstrap_components as dbc
 import plotly.express as px
 import plotly.graph_objects as go
+
+from urllib.request import urlopen
 import json
 
 from components.database import DataBase
@@ -71,8 +73,8 @@ def get_figChoropleph(df_choropleph, propriedade):
     color_scale = get_color_scale(propriedade)
     tickformat = get_tickformat(propriedade)
 
-    with open('../data/ES_MALHA_MUNICIPIOS.geojson') as json_file:
-        municipios = json.load(json_file)
+    with urlopen("https://gist.githubusercontent.com/DaniloSI/ec490ce7ef3336c5d7c7c6ea946ae8b4/raw/242984da9784de0d1bbff85e318d46daa1075e04/Malha_Geografica_ES.geojson") as url:
+        municipios = json.loads(url.read())
 
     figChoropleth = px.choropleth(
         df_choropleph.fillna(0),
