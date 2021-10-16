@@ -29,13 +29,13 @@ O presente projeto foi desenvolvido como parte de um TCC, para a obtenção do g
 
 O diagrama abaixo apresenta uma visão geral de todo o projeto.
 
-![Imgur](https://i.imgur.com/a85Xfmd.png)
+![Imgur](https://i.imgur.com/9cPmLdE.png)
 
 ## Diagrama de Componentes do Dashboard
 
 O diagrama abaixo apresenta a organização dos componentes do Dashboard, utilizando o framework Dash.
 
-![Imgur](https://i.imgur.com/qTc9nOC.png)
+![Imgur](https://i.imgur.com/jNmj3zx.png)
 
 ## Estrutura do Projeto
 
