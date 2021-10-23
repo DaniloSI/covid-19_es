@@ -37,7 +37,7 @@ O diagrama abaixo apresenta a organização dos componentes do Dashboard, utiliz
 
 ![Imgur](https://i.imgur.com/jNmj3zx.png)
 
-## Estrutura do Projeto
+## Estrutura de Pastas do Projeto
 
 O diagrama abaixo apresenta a organização de pastas do projeto.
 
@@ -50,6 +50,10 @@ O diagrama abaixo apresenta a organização de pastas do projeto.
 │   │   │   └── GitHub-Mark-32px.png
 │   │   └── page.css
 │   └── components
+│       ├── dao
+│       │   ├── covid_dao.py
+│       │   ├── dao.py
+│       │   └── municipio_dao.py
 │       ├── dashboard.py
 │       ├── database.py
 │       ├── filtros
@@ -64,13 +68,12 @@ O diagrama abaixo apresenta a organização de pastas do projeto.
 │       ├── navbar.py
 │       ├── observer.py
 │       └── util.py
-├── data
-│   ├── ES_MALHA_MUNICIPIOS.geojson
-│   └── municipios.csv
 ├── LICENSE
 ├── notebooks
 │   ├── Análise Exploratória de Dados.ipynb
 │   ├── Data-visualizations.ipynb
+│   ├── ETL-Indicadores-Municipais.ipynb
+│   ├── Gráfico de Casos no Brasil e no Espírito Santo.ipynb
 │   └── Pre-processing.ipynb
 ├── preprocessing.py
 ├── Procfile
@@ -78,17 +81,6 @@ O diagrama abaixo apresenta a organização de pastas do projeto.
 ├── requirements.txt
 └── runtime.txt
 ```
-
-Significado de cada pasta e item do projeto:
-
-- **dash**: Possui o código fonte responsável pelo Dashboard e utiliza a ferramenta Dash do Plotly.
-  - **app.py**: Contém o código python para gerar os componentes do _Dash Core_ e do _Dash Html_. Além disso é utilizado para servir a página HTML do Dashboard.
-  - **assets**: Contém as estilizações customizadas para a página HTML do Dashboard.
-- **data**: Contém os dados que foram coletados do IBGE e pré-processados. Esses dados são utilizados para gerar bases de dados enriquecidas, através da integração com a base de dados do [painel da COVID-19](https://coronavirus.es.gov.br/painel-covid-19-es).
-- **notebooks**: Contém os notebooks responsáveis por realizar o pré-processamento dos dados e para gerar um "rascunho" das visualizações contidas no Dashboard.
-- **notebooks_output**: Contém o resultado do pré-processamento realizado no notebook _Pre-processing.ipynb_.
-- **Procfile**: Possui o código utilizado pelo Heroku para servir o dashboard.
-- **requirements.txt**: Contém as dependências do projeto.
 
 ## Baixando o Projeto e Executando o Dash Localmente
 
