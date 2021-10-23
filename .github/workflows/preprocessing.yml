@@ -28,4 +28,4 @@ jobs:
           pip install -r requirements.txt
 
       - name: run preprocessing
-        run: python preprocessing.py $env:USR $env:PWD
+        run: python ETL-Covid.py $env:USR $env:PWD
