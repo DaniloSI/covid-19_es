@@ -1,4 +1,4 @@
-name: pre-processing
+name: ETL-Covid
 
 on:
   push:
