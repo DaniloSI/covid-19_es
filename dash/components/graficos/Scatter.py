@@ -43,7 +43,7 @@ def get_figScatter(tipo='casos-obitos'):
         hover_name='Municipio',
         hover_data={'Municipio': False},
         size_max=55 if tipo == 'casos-obitos' else 45,
-        log_x=True,
+        log_x=tipo == 'casos-obitos',
         labels=columns_renames,
         title='Municípios'
     )
