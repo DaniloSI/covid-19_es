@@ -4,8 +4,8 @@
 
 <div align="center">
   <!-- Pre-processing Status -->
-  <a href="https://github.com/DaniloSI/covid-19_es/actions/workflows/preprocessing.yml">
-    <img src="https://github.com/DaniloSI/covid-19_es/actions/workflows/preprocessing.yml/badge.svg?event=schedule" alt="Pre-processing" />
+  <a href="https://github.com/DaniloSI/covid-19_es/actions/workflows/ETL-Covid.yml">
+    <img src="https://github.com/DaniloSI/covid-19_es/actions/workflows/ETL-Covid.yml/badge.svg?event=schedule" alt="Pre-processing" />
   </a>
   <br />
   <br />
