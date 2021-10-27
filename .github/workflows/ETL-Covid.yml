@@ -27,5 +27,5 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: run preprocessing
+      - name: run ETL-Covid
         run: python ETL-Covid.py $env:USR $env:PWD
