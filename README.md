@@ -35,7 +35,7 @@ O diagrama abaixo apresenta uma visão geral de todo o projeto.
 
 O diagrama abaixo apresenta a organização dos componentes do Dashboard, utilizando o framework Dash.
 
-![Imgur](https://i.imgur.com/jNmj3zx.png)
+![Imgur](https://i.imgur.com/jFRgsUk.png)
 
 ## Estrutura de Pastas do Projeto
 
