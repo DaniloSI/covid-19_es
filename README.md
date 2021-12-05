@@ -14,7 +14,9 @@
 O presente projeto foi desenvolvido como parte de um TCC, para a obtenção do grau de Bacharelado em Sistemas de Informação, no Ifes Campus Serra.
 
 - Aluno: Danilo de Oliveira
-- Orientador: Moisés Savedra Omena
+- Orientadores:
+  - Moisés Savedra Omena
+  - Sérgio Nery Simões
 
 ## Sumário
 
