@@ -47,7 +47,7 @@ def _treemap_bairros(municipio, top_n, variavel):
 
 def treemap(municipio=None, top_n=10, variavel='Confirmados'):
     label = get_label(variavel)
-    title = lambda by: f'Top {top_n} {label} por {by}' if top_n is not None else f'{label} por {by}'
+    title = lambda by: f'Top {top_n} {by} por {label}' if top_n is not None else f'{label} por {by}'
     figure = lambda t, by: go.Figure(t, layout = {
         'title': title(by),
         'title_x': 0.5,
