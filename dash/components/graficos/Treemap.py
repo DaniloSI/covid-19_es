@@ -13,7 +13,6 @@ def _make_treemap(df):
         labels = df['Label'].tolist(),
         parents = df['Parent'].tolist(),
         values = df['Value'].tolist(),
-        textinfo = 'label+value',
     )
 
 def _treemap_municipios(top_n, variavel):
@@ -27,7 +26,7 @@ def _treemap_municipios(top_n, variavel):
     df_treemap.columns = ['Label', 'Value']
     df_treemap['Parent'] = ''
     
-    return _make_treemap(df_treemap)
+    return df_treemap
 
 def _treemap_bairros(municipio, top_n, variavel):
     query = f'Municipio == "{municipio}"'
@@ -43,7 +42,7 @@ def _treemap_bairros(municipio, top_n, variavel):
     df_treemap.columns = ['Parent', 'Label', 'Value']
     df_treemap['Parent'] = ''
     
-    return _make_treemap(df_treemap)
+    return df_treemap
 
 def treemap(municipio=None, top_n=10, variavel='Confirmados'):
     label = get_label(variavel)
@@ -55,6 +54,15 @@ def treemap(municipio=None, top_n=10, variavel='Confirmados'):
     })
     
     if municipio != None and municipio != '':
-        return figure(_treemap_bairros(municipio, top_n, variavel), f'bairros do município {municipio}')
-    
-    return figure(_treemap_municipios(top_n, variavel), 'municipios')
+        df_treemap = _treemap_bairros(municipio, top_n, variavel)
+        title_by = f'bairros do município {municipio}'
+    else:
+        df_treemap = _treemap_municipios(top_n, variavel)
+        title_by = 'municipios'
+
+    fig = figure(_make_treemap(df_treemap), title_by)
+    fig.data[0].customdata = df_treemap['Value'].apply(lambda v: format(int(v), ',d').replace(',', '.'))
+    fig.data[0].texttemplate = '%{label}<br>%{customdata} confirmados'
+    fig.data[0].hovertemplate = '%{label}<br>%{customdata} confirmados<extra></extra>'
+
+    return fig
