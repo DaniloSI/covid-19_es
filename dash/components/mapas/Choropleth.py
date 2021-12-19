@@ -99,8 +99,8 @@ def get_figChoropleph(df_choropleph, propriedade):
     )
 
     figChoropleth.update_geos(
-        fitbounds="geojson", visible=False, lataxis_range=[0, 500], lonaxis_range=[0, 100])
-    figChoropleth.update_layout(height=600, autosize=True, margin={
+        fitbounds="geojson", visible=False, lataxis_range=[0, 500], lonaxis_range=[0, 900])
+    figChoropleth.update_layout(height=800, autosize=True, margin={
         't': 50, 'r': 0, 'b': 0, 'l': 0}, coloraxis=dict(colorbar=dict(tickformat=tickformat, title='')), title_x=0.5)
 
     figChoropleth.layout['sliders'][0]['active'] = len(

@@ -84,6 +84,6 @@ def get_figScatter(tipo='casos-obitos'):
     fig.layout.updatemenus[0].buttons[0].args[1]['frame']['duration'] = 900
     fig.layout.updatemenus[0].buttons[0].args[1]['transition']['duration'] = 8000
 
-    fig.update_layout(autosize=True, margin={'t': 50, 'r': 0, 'b': 50, 'l': 50}, showlegend=False, title_x=0.5)
+    fig.update_layout(height=600, autosize=True, margin={'t': 50, 'r': 0, 'b': 50, 'l': 50}, showlegend=False, title_x=0.5)
 
     return fig
