@@ -116,20 +116,36 @@ class Dashboard(Subscriber):
                                 dbc.Card(
                                     [
                                         dbc.CardHeader(
-                                            dbc.RadioItems(
-                                                id="radioitems-choropleth",
-                                                options=[
-                                                    {'label': 'Incidência',
-                                                        'value': 'Incidencia'},
-                                                    {'label': 'Letalidade',
-                                                        'value': 'Letalidade'},
-                                                    {'label': 'Confirmados',
-                                                        'value': 'ConfirmadosAcumulado'},
-                                                    {'label': 'Óbitos',
-                                                        'value': 'ObitosAcumulado'},
+                                            dbc.Row(
+                                                [
+                                                    dbc.Col(
+                                                        dbc.Select(
+                                                            id="radioitems-choropleth",
+                                                            options=[
+                                                                {'label': 'Incidência',
+                                                                    'value': 'Incidencia'},
+                                                                {'label': 'Letalidade',
+                                                                    'value': 'Letalidade'},
+                                                                {'label': 'Confirmados',
+                                                                    'value': 'ConfirmadosAcumulado'},
+                                                                {'label': 'Óbitos',
+                                                                    'value': 'ObitosAcumulado'},
+                                                            ],
+                                                            value='Incidencia',
+                                                        )
+                                                    ),
+                                                    dbc.Col(
+                                                        dbc.Checklist(
+                                                            options=[
+                                                                {"label": "Acumulado", "value": 1},
+                                                            ],
+                                                            value=[1],
+                                                            id="switch-acumulado-mapa",
+                                                            switch=True,
+                                                        ),
+                                                    ),
                                                 ],
-                                                value='Incidencia',
-                                                inline=True,
+                                                style={'alignItems': 'center'}
                                             )
                                         ),
                                         dbc.CardBody(

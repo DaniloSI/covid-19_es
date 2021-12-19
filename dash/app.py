@@ -110,15 +110,17 @@ def on_municipio_indicators_change(municipio):
     return indicators(municipio)
 
 @app.callback(
-    Output("scatter-municipios", "figure"),
+    [
+        Output("scatter-municipios", "figure"),
+        Output("select-visualizacao", "disabled"),
+    ],
     [
         Input("radioitems-scatter", "value"),
         Input("select-visualizacao", "value")
     ],
-    prevent_initial_call=True
 )
 def on_scatter_change(tipo, tipo_visualizacao):
-    return get_figScatter(tipo, tipo_visualizacao)
+    return get_figScatter(tipo, tipo_visualizacao), tipo == 'casos-obitos'
 
 @app.callback(
     Output("choropleth", "figure"),
