@@ -263,13 +263,25 @@ class Dashboard(Subscriber):
                                                         dbc.RadioItems(
                                                             id="radioitems-scatter",
                                                             options=[
-                                                                {"label": "Casos x Óbitos",
+                                                                {"label": "Casos x Óbitos (Acumulado)",
                                                                     "value": 'casos-obitos'},
                                                                 {"label": "Incidência x Letalidade",
                                                                     "value": 'incidencia-letalidade'},
                                                             ],
                                                             value='casos-obitos',
                                                             inline=True
+                                                        ),
+                                                    ),
+                                                    dbc.Col(
+                                                        dbc.Select(
+                                                            id="select-visualizacao",
+                                                            options=[
+                                                                {"label": "Últimas 2 semanas",
+                                                                    "value": 'last-two-weeks'},
+                                                                {"label": "Animação mês a mês",
+                                                                    "value": 'time-elapse'},
+                                                            ],
+                                                            value='time-elapse',
                                                         ),
                                                     ),
                                                 ],

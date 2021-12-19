@@ -46,8 +46,7 @@ def get_df_scatter(tipo):
         
         return df_scatter
 
-
-def get_figScatter(tipo='casos-obitos'):
+def get_fig_by_month(tipo):
     df_scatter = get_df_scatter(tipo)
 
     if tipo == 'casos-obitos':
@@ -87,3 +86,46 @@ def get_figScatter(tipo='casos-obitos'):
     fig.update_layout(height=600, autosize=True, margin={'t': 50, 'r': 0, 'b': 50, 'l': 50}, showlegend=False, title_x=0.5)
 
     return fig
+
+def get_fig_last_two_weeks():
+    df = DataBase.get_df()
+    df_municipios = DataBase.get_df_municipios()
+
+    # Gera uma lista com as duas últimas datas presentes nos dados
+    datas = df['DataNotificacao']\
+        .sort_values(ascending=False)\
+        .drop_duplicates()\
+        .head(2)\
+        .tolist()
+
+    # Filtra os dados que contém as duas últimas datas
+    df_counts_two_weeks = df.query(f'DataNotificacao in {datas}')
+
+    # Soma os totais de confirmados e óbitos das duas últimas datas
+    df_counts_two_weeks = df_counts_two_weeks[['Municipio', 'Confirmados', 'Obitos', 'Curas']]\
+        .groupby(['Municipio'])\
+        .sum()\
+        .reset_index()\
+        .merge(df_municipios, on='Municipio', how='left')\
+        .dropna()
+
+    # Calcula a incidência e a letalidade
+    df_counts_two_weeks['Incidencia'] = round(df_counts_two_weeks['Confirmados'] * 10000 / df_counts_two_weeks['PopulacaoEstimada'], 1)
+    df_counts_two_weeks['Letalidade'] = round(df_counts_two_weeks['Obitos'] * 100.0 / df_counts_two_weeks['Confirmados'], 2)
+
+    return px.scatter(
+        df_counts_two_weeks,
+        x='Letalidade',
+        y='Incidencia',
+        size='PopulacaoEstimada',
+        color='Municipio',
+        hover_name='Municipio',
+        size_max=55,
+        labels={'Incidencia': 'Incidência', 'Municipio': ''},
+    )
+
+def get_figScatter(tipo='casos-obitos', tipo_visualizacao='time-elapse'):
+    if (tipo == 'incidencia-letalidade' and tipo_visualizacao == 'last-two-weeks'):
+        return get_fig_last_two_weeks()
+
+    return get_fig_by_month(tipo)

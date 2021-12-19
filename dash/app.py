@@ -111,11 +111,14 @@ def on_municipio_indicators_change(municipio):
 
 @app.callback(
     Output("scatter-municipios", "figure"),
-    Input("radioitems-scatter", "value"),
+    [
+        Input("radioitems-scatter", "value"),
+        Input("select-visualizacao", "value")
+    ],
     prevent_initial_call=True
 )
-def on_scatter_change(tipo):
-    return get_figScatter(tipo)
+def on_scatter_change(tipo, tipo_visualizacao):
+    return get_figScatter(tipo, tipo_visualizacao)
 
 @app.callback(
     Output("choropleth", "figure"),
