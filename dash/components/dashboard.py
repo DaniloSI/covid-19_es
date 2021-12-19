@@ -208,7 +208,7 @@ class Dashboard(Subscriber):
                                                                 {"label": "Semanal",
                                                                     "value": 'semanal'},
                                                             ],
-                                                            value='acumulado',
+                                                            value='semanal',
                                                             clearable=False,
                                                         ),
                                                         width=2,

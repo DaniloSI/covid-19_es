@@ -114,7 +114,7 @@ def _semanal(municipio, bairro, variavel):
     return fig
     
 
-def evolucao(periodo='acumulado', variavel='confirmados', municipio=None, bairro=None):
+def evolucao(periodo='semanal', variavel='confirmados', municipio=None, bairro=None):
     fig = go.Figure()
 
     fig = _acumulado(municipio, bairro) if periodo == 'acumulado' else _semanal(municipio, bairro, variavel)

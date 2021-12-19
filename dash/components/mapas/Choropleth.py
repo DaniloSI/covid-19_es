@@ -60,9 +60,9 @@ def get_tickformat(propriedade):
 
 def get_color_scale(propriedade):
     if propriedade == 'Incidencia' or propriedade == 'ConfirmadosAcumulado':
-        return px.colors.sequential.Viridis[::-1]
+        return px.colors.sequential.Viridis
 
-    return px.colors.sequential.Magma[::-1]
+    return px.colors.sequential.Magma
 
 
 def get_figChoropleph(df_choropleph, propriedade):
