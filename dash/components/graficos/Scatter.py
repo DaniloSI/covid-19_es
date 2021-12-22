@@ -70,14 +70,14 @@ def get_fig_by_month(tipo):
         y=y,
         size='PopulacaoEstimada',
         color='Municipio',
-        hover_name='Municipio',
         size_max=55,
         animation_frame='Periodo',
         animation_group='Municipio',
         log_x=tipo != 'incidencia-letalidade',
         range_x=range_x,
         labels=columns_renames,
-        range_y=[0, df_scatter[y].max()]
+        range_y=[0, df_scatter[y].max()],
+        custom_data=['Municipio', 'PopulacaoEstimada']
     )
 
     fig.layout.updatemenus[0].buttons[0].args[1]['frame']['duration'] = 900
@@ -119,13 +119,38 @@ def get_fig_last_two_weeks():
         y='Incidencia',
         size='PopulacaoEstimada',
         color='Municipio',
-        hover_name='Municipio',
         size_max=55,
         labels={'Incidencia': 'Incidência', 'Municipio': ''},
+        custom_data=['Municipio', 'PopulacaoEstimada']
     )
 
 def get_figScatter(tipo='casos-obitos', tipo_visualizacao='time-elapse'):
     if (tipo == 'incidencia-letalidade' and tipo_visualizacao == 'last-two-weeks'):
-        return get_fig_last_two_weeks()
+        fig = get_fig_last_two_weeks()
 
-    return get_fig_by_month(tipo)
+    fig = get_fig_by_month(tipo)
+
+    if (tipo == 'casos-obitos'):
+        label_y = 'Casos'
+        label_x = 'Óbitos'
+        symbol_x = ''
+    else:
+        label_y = 'Incidência'
+        label_x = 'Letalidade'
+        symbol_x = '%'
+
+    CUSTOM_HOVERTEMPLATE = "<br>".join([
+        "<b>%{customdata[0]}</b>",
+        label_y + " : %{y:,.}",
+        label_x + " : %{x:,.}" + symbol_x,
+        "População Estimada: %{customdata[1]:,}",
+    ]) + "<extra></extra>"
+
+    fig.update_traces(hovertemplate=CUSTOM_HOVERTEMPLATE)
+    for frame in fig.frames:
+        for data in frame.data:
+            data.hovertemplate = CUSTOM_HOVERTEMPLATE
+
+    fig.update_layout(separators=",.")
+
+    return fig

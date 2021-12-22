@@ -24,7 +24,7 @@ def _make_indicator(title, value, reference, domain={}, show_delta=True):
             'text': f'<span style="font-size: 18px">{title}</span>'
         },
         number = {
-            'font': { 'size': 48 }
+            'font': { 'size': 48 }, 'valueformat':','
         },
         delta = {
             'reference': reference,
@@ -46,7 +46,7 @@ def _indicator(df, first_date, second_date, variavel, domain, show_delta=True):
     get_label = lambda v: {
         'Confirmados': 'Confirmados',
         'Obitos': 'Óbitos',
-        'Curas': 'Curados',
+        'Curas': 'Recuperados',
     }[v]
     
     return _make_indicator(get_label(variavel), penultimo_valor, antepenultimo_valor, domain, show_delta)
@@ -77,7 +77,8 @@ def indicators(municipio=None):
             font=dict(color='#afafaf')
         ),
         margin = dict(t=90, r=0, b=0, l=0),
-        autosize=True
+        autosize=True,
+        separators=',.'
     )
 
     return fig

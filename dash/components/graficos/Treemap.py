@@ -13,6 +13,7 @@ def _make_treemap(df):
         labels = df['Label'].tolist(),
         parents = df['Parent'].tolist(),
         values = df['Value'].tolist(),
+        textinfo = 'label+value',
     )
 
 def _treemap_municipios(top_n, variavel):
@@ -61,8 +62,7 @@ def treemap(municipio=None, top_n=10, variavel='Confirmados'):
         title_by = 'municipios'
 
     fig = figure(_make_treemap(df_treemap), title_by)
-    fig.data[0].customdata = df_treemap['Value'].apply(lambda v: format(int(v), ',d').replace(',', '.'))
-    fig.data[0].texttemplate = '%{label}<br>%{customdata} confirmados'
-    fig.data[0].hovertemplate = '%{label}<br>%{customdata} confirmados<extra></extra>'
+    
+    fig.update_layout(separators=',.')
 
     return fig
