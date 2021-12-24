@@ -126,10 +126,6 @@ class Dashboard(Subscriber):
                                                                     'value': 'Incidencia'},
                                                                 {'label': 'Letalidade',
                                                                     'value': 'Letalidade'},
-                                                                {'label': 'Confirmados',
-                                                                    'value': 'ConfirmadosAcumulado'},
-                                                                {'label': 'Óbitos',
-                                                                    'value': 'ObitosAcumulado'},
                                                             ],
                                                             value='Incidencia',
                                                         )

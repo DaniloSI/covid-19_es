@@ -141,8 +141,8 @@ def get_figScatter(tipo='casos-obitos', tipo_visualizacao='time-elapse'):
 
     CUSTOM_HOVERTEMPLATE = "<br>".join([
         "<b>%{customdata[0]}</b>",
-        label_y + " : %{y:,.}",
-        label_x + " : %{x:,.}" + symbol_x,
+        label_y + ": %{y:,.}",
+        label_x + ": %{x:,.}" + symbol_x,
         "População Estimada: %{customdata[1]:,}",
     ]) + "<extra></extra>"
 

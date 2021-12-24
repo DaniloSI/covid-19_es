@@ -124,11 +124,19 @@ def on_scatter_change(tipo, tipo_visualizacao):
 
 @app.callback(
     Output("choropleth", "figure"),
-    Input("radioitems-choropleth", "value"),
+    [
+        Input("radioitems-choropleth", "value"),
+        Input("switch-acumulado-mapa", "value"),
+    ],
     prevent_initial_call=True
 )
-def on_choropleth_change(tipo):
-    return Choropleth.get_figChoropleph(tipo)
+def on_choropleth_change(radio_variavel, switch_acumulado):
+    variavel = radio_variavel # Incidencia ou Letalidade
+
+    if len(switch_acumulado) != 0: # Se True, então é acumulado
+        variavel += 'Acumulado'
+    
+    return Choropleth.get_figChoropleph(variavel)
 
 if __name__ == '__main__':
     app.run_server(debug=False, use_reloader=False)

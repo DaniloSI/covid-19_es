@@ -1,152 +1,148 @@
 # -*- coding: utf-8 -*-
 
-import pandas as pd
-import dash_core_components as dcc
-import dash_bootstrap_components as dbc
 import plotly.express as px
-import plotly.graph_objects as go
-
 from urllib.request import urlopen
 import json
 
 from components.database import DataBase
 from components.observer import Subscriber
 
-from datetime import date
+def get_df_choropleph(tipo_visualizacao):
+    df_counts = DataBase.get_df()
+    df_municipios = DataBase.get_df_municipios()
 
+    df_counts['Periodo'] = df_counts['DataNotificacao'].apply(lambda d: f'{d.year}-{d.month:02d}')
 
-def relative_month(reference_date, current_date):
-    # Calcula o mês relativo à data de referência (reference_date)
-    return int((current_date - reference_date).days / 30) + 1
+    # Calcula confirmados, obitos e curas por mês
+    df_counts_municipios = df_counts[['Periodo', 'Municipio', 'Confirmados', 'Obitos', 'Curas']]\
+        .groupby(['Periodo', 'Municipio'])\
+        .sum()\
+        .reset_index()
 
-
-def get_label(propriedade):
-    if propriedade == 'Incidencia':
-        return 'Incidência'
-    elif propriedade == 'ConfirmadosAcumulado':
-        return 'Confirmados'
-    elif propriedade == 'ObitosAcumulado':
-        return 'Óbitos'
+    # Calcula os acumulados por mês
+    for variavel in ['Confirmados', 'Obitos', 'Curas']:
+        df_counts_municipios[f'{variavel}Acumulado'] = df_counts_municipios[['Periodo', 'Municipio', variavel]]\
+            .groupby('Municipio')\
+            .cumsum()
+    
+    if (tipo_visualizacao == 'relativo'):
+        df_choropleph_relativo = df_counts_municipios[['Periodo', 'Municipio', 'Confirmados', 'Obitos', 'Curas']]\
+            .groupby(['Periodo', 'Municipio'])\
+            .sum()\
+            .reset_index()\
+            .merge(df_municipios, on='Municipio', how='left')\
+            .fillna(0)
     else:
-        return 'Letalidade'
+        df_choropleph_relativo = df_counts_municipios[['Periodo', 'Municipio', 'ConfirmadosAcumulado', 'ObitosAcumulado']]\
+            .sort_values(['ConfirmadosAcumulado', 'ObitosAcumulado'])\
+            .reset_index()\
+            .merge(df_municipios, on='Municipio', how='left')\
+            .fillna(0)\
+            .sort_values('Periodo')\
+            .rename({'ConfirmadosAcumulado': 'Confirmados', 'ObitosAcumulado': 'Obitos'}, axis=1)
 
+    confirmados_relativo = df_choropleph_relativo['Confirmados']
+    obitos_relativo = df_choropleph_relativo['Obitos']
+    populacao_estimada = df_choropleph_relativo['PopulacaoEstimada']
 
-def get_equivalente(propriedade):
-    if propriedade == 'Incidencia':
-        return 'ConfirmadosAcumulado'
-    elif propriedade == 'ConfirmadosAcumulado':
-        return 'Incidencia'
-    elif propriedade == 'ObitosAcumulado':
-        return 'Letalidade'
-    else:
-        return 'ObitosAcumulado'
+    df_choropleph_relativo['Incidencia'] = round(confirmados_relativo * 100_000 / populacao_estimada, 1)
+    df_choropleph_relativo['Letalidade'] = obitos_relativo / confirmados_relativo
 
+    df_choropleph_relativo['Letalidade'].fillna(0, inplace=True)
 
-def get_format(propriedade):
-    if propriedade == 'Incidencia':
-        return ':.1f'
-    elif propriedade == 'Letalidade':
-        return ':.2%'
-    else:
-        return ':d'
+    df_choropleph_relativo = df_choropleph_relativo.dropna().sort_values('Periodo')
 
+    df_choropleph_relativo
 
-def get_tickformat(propriedade):
-    if propriedade == 'Letalidade':
-        return '.0%'
+    return df_choropleph_relativo
 
-    return 's'
+def get_fig_choropleph(variavel, tipo_visualizacao):
+    # Labels
+    labels = {
+        'Incidencia': 'Incidência',
+        'Letalidade': 'Letalidade',
+        'relativo': 'Relativo ao Período',
+        'acumulado': 'Acumulado'
+    }
 
+    # DataFrame
+    df_choropleph = get_df_choropleph(tipo_visualizacao)
+    df_choropleph = df_choropleph[df_choropleph['codarea'] != 0]
 
-def get_color_scale(propriedade):
-    if propriedade == 'Incidencia' or propriedade == 'ConfirmadosAcumulado':
-        return px.colors.sequential.Viridis
-
-    return px.colors.sequential.Magma
-
-
-def get_figChoropleph(df_choropleph, propriedade):
-    label = get_label(propriedade)
-    propriedade_equivalente = get_equivalente(propriedade)
-    label_equivalente = get_label(propriedade_equivalente)
-    format_value = get_format(propriedade)
-    color_scale = get_color_scale(propriedade)
-    tickformat = get_tickformat(propriedade)
-
+    # Mapa Coroplético
+    color = 'Ice' if variavel.lower() == 'incidencia' else 'Solar'
+    
     with urlopen("https://gist.githubusercontent.com/DaniloSI/ec490ce7ef3336c5d7c7c6ea946ae8b4/raw/242984da9784de0d1bbff85e318d46daa1075e04/Malha_Geografica_ES.geojson") as url:
         municipios = json.loads(url.read())
 
-    figChoropleth = px.choropleth(
-        df_choropleph.fillna(0),
+    fig = px.choropleth(
+        df_choropleph,
         geojson=municipios,
         locations='codarea',
         featureidkey="properties.codarea",
-        color=propriedade,
-        color_continuous_scale=color_scale,
-        hover_name='Municipio',
-        hover_data={
-            propriedade_equivalente: True,
-            propriedade: format_value,
-            'codarea': False},
-        labels={
-            'codarea': 'Código do Município',
-            propriedade_equivalente: label_equivalente,
-            propriedade: label,
-            'Mes': 'Mês Relativo'
-        },
-        animation_frame='Mes',
-        title=f'Acumulado de {label}',
+        color=variavel,
+        color_continuous_scale=color,
+        animation_frame='Periodo',
+        title=f'{labels[variavel]} - {labels[tipo_visualizacao]}',
+        custom_data=[
+            df_choropleph['Municipio'],
+            df_choropleph[variavel],
+            df_choropleph['Confirmados'],
+            df_choropleph['Obitos'],
+            df_choropleph['PopulacaoEstimada'],
+            df_choropleph['Periodo'],
+        ]
     )
 
-    figChoropleth.update_geos(
-        fitbounds="geojson", visible=False, lataxis_range=[0, 500], lonaxis_range=[0, 900])
-    figChoropleth.update_layout(height=800, autosize=True, margin={
-        't': 50, 'r': 0, 'b': 0, 'l': 0}, coloraxis=dict(colorbar=dict(tickformat=tickformat, title='')), title_x=0.5)
+    if variavel.lower() == 'incidencia':
+        variavel_hovertemplate = '%{customdata[1]:,} casos a cada 100 mil habitantes'
+        colorbar_tickformat = ','
+    elif variavel.lower() == 'letalidade':
+        variavel_hovertemplate = '%{customdata[1]:.1%}'
+        colorbar_tickformat = '.1%'
 
-    figChoropleth.layout['sliders'][0]['active'] = len(
-        figChoropleth.frames) - 1
+    CUSTOM_HOVERTEMPLATE = "<br>".join([
+        "<b>%{customdata[0]}</b>",
+        f"{labels[variavel]}: " + variavel_hovertemplate,
+        "Quantidade de Casos: %{customdata[2]:,}",
+        "Quantidade de Óbitos: %{customdata[3]:,}",
+        "Quantidade Estimada de Habitantes: %{customdata[4]:,}",
+    ]) + "<extra>%{customdata[5]}</extra>"
 
-    return go.Figure(data=figChoropleth['frames'][-1]['data'], frames=figChoropleth['frames'], layout=figChoropleth.layout)
+    fig.update_traces(hovertemplate=CUSTOM_HOVERTEMPLATE)
 
+    for frame in fig.frames:
+        for data in frame.data:
+            data.hovertemplate = CUSTOM_HOVERTEMPLATE
+
+    fig.update_geos(fitbounds="geojson", visible=False, lataxis_range=[0,500], lonaxis_range=[0, 900])
+
+    fig.update_layout(
+        height=800,
+        autosize=True,
+        margin={'t': 50, 'r': 0, 'b': 0, 'l': 0},
+        coloraxis=dict(
+            colorbar=dict(title='', tickformat=colorbar_tickformat)
+        ),
+        title_x=0.5,
+        separators=",."
+    )
+
+    return fig
 
 class Choropleth(Subscriber):
     _choropleths = {}
 
     @staticmethod
     def update():
-        df = DataBase.get_df()
-        df_municipios = DataBase.get_df_municipios()
-
-        df_choropleph = df.groupby(['DataNotificacao', 'Municipio'])\
-            .sum()\
-            .reset_index()\
-            .merge(df_municipios, on='Municipio', how='left')
-
-        df_choropleph['Incidencia'] = round(
-            df_choropleph['ConfirmadosAcumulado'] * 10000 / df_choropleph['PopulacaoEstimada'], 1)
-        df_choropleph['Letalidade'] = round(
-            df_choropleph['ObitosAcumulado'] * 1.0 / df_choropleph['ConfirmadosAcumulado'], 4)
-
-        df_choropleph = df_choropleph[df_choropleph['PopulacaoEstimada'] >= 0]
-        df_choropleph['DataNotificacao'] = pd.to_datetime(
-            df_choropleph['DataNotificacao'])
-
-        reference_date = df_choropleph['DataNotificacao'].min()
-        df_choropleph['Mes'] = df_choropleph['DataNotificacao'].apply(
-            lambda d: relative_month(reference_date, d))
-
-        Choropleth._choropleths['Incidencia'] = get_figChoropleph(
-            df_choropleph, 'Incidencia')
-        Choropleth._choropleths['Letalidade'] = get_figChoropleph(
-            df_choropleph, 'Letalidade')
-        Choropleth._choropleths['ConfirmadosAcumulado'] = get_figChoropleph(
-            df_choropleph, 'ConfirmadosAcumulado')
-        Choropleth._choropleths['ObitosAcumulado'] = get_figChoropleph(
-            df_choropleph, 'ObitosAcumulado')
+        Choropleth._choropleths['Incidencia'] = get_fig_choropleph('Incidencia', 'relativo')
+        Choropleth._choropleths['Letalidade'] = get_fig_choropleph('Letalidade', 'relativo')
+        Choropleth._choropleths['IncidenciaAcumulado'] = get_fig_choropleph('Incidencia', 'acumulado')
+        Choropleth._choropleths['LetalidadeAcumulado'] = get_fig_choropleph('Letalidade', 'acumulado')
 
     @staticmethod
-    def get_figChoropleph(propriedade):
+    def get_figChoropleph(variavel):
         if len(Choropleth._choropleths) == 0:
             Choropleth.update()
 
-        return Choropleth._choropleths[propriedade]
+        return Choropleth._choropleths[variavel]
