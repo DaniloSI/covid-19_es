@@ -239,9 +239,8 @@ class Dashboard(Subscriber):
                                                                 {"label": "Recuperados",
                                                                     "value": 'curas'},
                                                             ],
-                                                            value='confirmados',
+                                                            value='',
                                                             clearable=False,
-                                                            disabled=True
                                                         ),
                                                         width=4,
                                                         style={

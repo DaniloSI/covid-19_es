@@ -53,10 +53,7 @@ start_new_thread(
 app.layout = Dashboard.get_dashboard
 
 @app.callback(
-    [
-        Output("acumulados", "figure"),
-        Output(component_id="radioitems-evolucao-variavel", component_property='disabled'),
-    ],
+    Output("acumulados", "figure"),
     [
         Input("radioitems-evolucao-periodo", "value"),
         Input("radioitems-evolucao-variavel", "value"),
@@ -65,7 +62,21 @@ app.layout = Dashboard.get_dashboard
     ],
 )
 def on_evolucao_change(periodo, variavel, municipio, bairro):
-    return evolucao(periodo, variavel, municipio, bairro), periodo != 'semanal'
+    return evolucao(periodo, variavel, municipio, bairro)
+
+
+@app.callback(
+    [
+        Output("radioitems-evolucao-variavel", "value"),
+        Output("radioitems-evolucao-variavel", "disabled")
+    ],
+    Input("radioitems-evolucao-periodo", "value"),
+)
+def on_periodo_change(periodo):
+    if periodo != 'semanal':
+        return '', True
+    
+    return 'confirmados', False
 
 @app.callback(
     [

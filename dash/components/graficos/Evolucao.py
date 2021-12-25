@@ -23,7 +23,7 @@ def _acumulado(municipio, bairro):
         .sum()\
         .reset_index()
     
-    df.columns = ['Data', 'Confirmados', 'Óbitos', 'Curas']
+    df.columns = ['Data', 'Confirmados', 'Óbitos', 'Recuperados']
     
     scatter = lambda v, color: go.Scatter(
         x = df['Data'],
@@ -32,9 +32,9 @@ def _acumulado(municipio, bairro):
         line = dict(width = 2.5, color = color)
     )
     
-    fig.add_trace(scatter('Confirmados', colors['red']))
-    fig.add_trace(scatter('Óbitos', colors['black']))
-    fig.add_trace(scatter('Curas', colors['green']))
+    fig.add_trace(scatter('Confirmados', colors['yellow']))
+    fig.add_trace(scatter('Óbitos', colors['red']))
+    fig.add_trace(scatter('Recuperados', colors['green']))
 
     fig.update_layout(
         plot_bgcolor="white",
@@ -67,29 +67,29 @@ def _semanal(municipio, bairro, variavel):
         .sum()\
         .reset_index()
 
-    df.columns = ['Data', 'Confirmados', 'Óbitos', 'Curas']
+    df.columns = ['Data', 'Confirmados', 'Óbitos', 'Recuperados']
 
     if variavel == 'confirmados':
         variavel = 'Confirmados'
-        cor = colors['red']
+        cor = colors['yellow']
     elif variavel == 'obitos':
         variavel = 'Óbitos'
-        cor = colors['black']
+        cor = colors['red']
     else:
-        variavel = 'Curas'
+        variavel = 'Recuperados'
         cor = colors['green']
 
     def get_data_interval(data_inicio):
         data_fim = data_inicio + timedelta(days=6)
         today = date.today()
-        
+
         if today < data_fim:
             data_fim = today
 
         pattern = '%d/%m/%Y'
 
         return f'Consolidado de {data_inicio.strftime(pattern)} a {data_fim.strftime(pattern)}'
-    
+
     fig = go.Figure(go.Bar(
         x=df['Data'],
         y=df[variavel],
@@ -98,7 +98,7 @@ def _semanal(municipio, bairro, variavel):
         text=df['Data'].apply(get_data_interval).tolist(),
         hovertemplate=
             "<b>%{text}</b><br>" +
-            variavel + ": %{y}" +
+            variavel + ": %{y:,}" +
             "<extra></extra>",
     ))
 
@@ -108,13 +108,14 @@ def _semanal(municipio, bairro, variavel):
                 visible=True
             ),
             type="date"
-        )
+        ),
+        separators=',.'
     )
 
     return fig
     
 
-def evolucao(periodo='semanal', variavel='confirmados', municipio=None, bairro=None):
+def evolucao(periodo='semanal', variavel='', municipio=None, bairro=None):
     fig = go.Figure()
 
     fig = _acumulado(municipio, bairro) if periodo == 'acumulado' else _semanal(municipio, bairro, variavel)

@@ -5,8 +5,8 @@ def get_label(variavel):
     return {
         'Confirmados': 'confirmados',
         'Obitos': 'óbitos',
-        'Curas': 'curas',
-    }[variavel]
+        'Curas': 'recuperados',
+    }.get(variavel, '')
 
 def _make_treemap(df):
     return go.Treemap(
