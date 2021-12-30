@@ -135,7 +135,7 @@ class Dashboard(Subscriber):
                                                             options=[
                                                                 {"label": "Acumulado", "value": 1},
                                                             ],
-                                                            value=[1],
+                                                            value=[],
                                                             id="switch-acumulado-mapa",
                                                             switch=True,
                                                         ),

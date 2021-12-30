@@ -20,7 +20,7 @@ class DAO(ABC, Subscriber):
         usr = os.environ['MONGODB_USR']
         pwd = os.environ['MONGODB_PWD']
 
-        return f'mongodb+srv://{usr}:{pwd}@covid-19-es.nuzlk.mongodb.net/db?retryWrites=true&w=majority'
+        return f'mongodb+srv://{usr}:{pwd}@es-covid-19.nuzlk.mongodb.net/db?retryWrites=true&w=majority'
 
     def _fetch(self):
         print('----- # -----')
@@ -28,7 +28,7 @@ class DAO(ABC, Subscriber):
         with MongoClient(self._get_str_conn()) as client:
             collection = client[self.collection_name].dados
             print(f'Carregando um total de {collection.count_documents({})} registros')
-            self.df = pd.DataFrame(list(collection.find({}, {'_id': 0})))
+            self.df = pd.DataFrame(list(collection.find()))
         print('Dados carregados.')
         print('----- # -----')
 
