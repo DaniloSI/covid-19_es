@@ -9,6 +9,7 @@ import pandas as pd
 from unidecode import unidecode
 from pymongo import MongoClient
 from sys import argv
+import numpy as np
 
 # 1. Carrega os Dados
 
@@ -75,7 +76,7 @@ def parse_result(indicador_id, l_res):
     
     return {
         'codarea_join': codarea,
-        label: 0.0 if last_result == '-' else float(last_result)
+        label: np.nan if last_result == '-' else float(last_result)
     }
 
 # Gera uma série para cada indicador e concatena ao DataFrame de municípios
