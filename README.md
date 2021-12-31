@@ -3,9 +3,13 @@
 </div>
 
 <div align="center">
-  <!-- Pre-processing Status -->
+  <!-- ETL-Covid Status -->
   <a href="https://github.com/DaniloSI/covid-19_es/actions/workflows/ETL-Covid.yml">
-    <img src="https://github.com/DaniloSI/covid-19_es/actions/workflows/ETL-Covid.yml/badge.svg?event=schedule" alt="Pre-processing" />
+    <img src="https://github.com/DaniloSI/covid-19_es/actions/workflows/ETL-Covid.yml/badge.svg?event=schedule" alt="ETL-Covid" />
+  </a>
+  <!-- ETL-Municipios Status -->
+  <a href="https://github.com/DaniloSI/covid-19_es/actions/workflows/ETL-Municipios.yml">
+    <img src="https://github.com/DaniloSI/covid-19_es/actions/workflows/ETL-Municipios.yml/badge.svg" alt="ETL-Municipios" />
   </a>
   <br />
   <br />
