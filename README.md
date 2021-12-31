@@ -35,7 +35,7 @@ O presente projeto foi desenvolvido como parte de um TCC, para a obtenção do g
 
 O diagrama abaixo apresenta uma visão geral de todo o projeto.
 
-![Imgur](https://i.imgur.com/9cPmLdE.png)
+![Imgur](https://i.imgur.com/B0uXcn9.png)
 
 ## Diagrama de Componentes do Dashboard
 
