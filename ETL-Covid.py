@@ -13,10 +13,13 @@ print(f'Executando no modo "{mode}"')
 
 print('Obtendo Microdados...')
 url = 'MICRODADOS.zip'
+
 if production:
     url = 'https://bi.s3.es.gov.br/covid19/MICRODADOS.zip'
 
-df = pd.read_csv(url, sep=';', encoding='cp1252')
+df = pd.read_csv(url, sep=';', encoding='cp1252')\
+    .query('Classificacao == "Confirmados"')\
+    .reset_index(drop=True)
 
 
 print('Realizando a conversão de data e selecionando os casos confirmados...')
@@ -31,7 +34,6 @@ df['DataConfirmado'] = df['DataColeta_RT_PCR'].combine_first(df['DataColetaTeste
 df['DataNotificacao'] = pd.to_datetime(df['DataConfirmado'], errors = 'coerce')
 df['DataObito'] = pd.to_datetime(df['DataObito'])
 df.sort_values('DataNotificacao', inplace=True)
-df = df.query('Classificacao == "Confirmados"').reset_index(drop=True)
 
 
 print('Padronizando nomes de municípios e bairros...')
@@ -119,7 +121,7 @@ str_conn = 'mongodb://localhost'
 if production:
     usr = argv[1]
     pwd = argv[2]
-    str_conn = f'mongodb+srv://{usr}:{pwd}@covid-19-es.nuzlk.mongodb.net/myFirstDatabase?retryWrites=true&w=majority'
+    str_conn = f'mongodb+srv://{usr}:{pwd}@es-covid-19.nuzlk.mongodb.net/myFirstDatabase?retryWrites=true&w=majority'
 
 client = MongoClient(str_conn)
 
@@ -128,7 +130,7 @@ df_counts_by_week_dict = df_counts_by_week.to_dict(orient='records')
 print('Deletando banco de dados existente...')
 client.drop_database('db')
 
-print('Inserindo novos dados...')
+print(f'Inserindo {len(df_counts_by_week_dict)} dados...')
 if len(df_counts_by_week_dict) > 0:
     client.db.dados.insert_many(df_counts_by_week_dict)
 
