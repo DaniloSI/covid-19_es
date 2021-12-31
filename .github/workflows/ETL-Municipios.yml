@@ -1,0 +1,29 @@
+name: ETL-Municipios
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: windows-latest
+    env:
+      USR: ${{ secrets.MONGODB_USR }}
+      PWD: ${{ secrets.MONGODB_PWD }}
+    steps:
+      - name: checkout repo content
+        uses: actions/checkout@v2 # checkout the repository content to github runner
+
+      - name: setup python
+        uses: actions/setup-python@v2
+        with:
+          python-version: "3.8" # install the python version needed
+
+      - name: install python packages
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: run ETL-Municipios
+        run: python ETL-Municipios.py $env:USR $env:PWD
