@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
 import plotly.express as px
-from urllib.request import urlopen
-import json
+from requests import get
+
 
 from components.database import DataBase
 from components.observer import Subscriber
@@ -72,17 +72,29 @@ def get_fig_choropleph(variavel, tipo_visualizacao):
     # Mapa Coroplético
     color = 'Ice' if variavel.lower() == 'incidencia' else 'Solar'
     
-    with urlopen("https://gist.githubusercontent.com/DaniloSI/ec490ce7ef3336c5d7c7c6ea946ae8b4/raw/242984da9784de0d1bbff85e318d46daa1075e04/Malha_Geografica_ES.geojson") as url:
-        municipios = json.loads(url.read())
+    uf = 'ES'
 
-    fig = px.choropleth(
+    url_malha_geografica = f'https://servicodados.ibge.gov.br/api/v3/malhas/estados/{uf}?formato=application/vnd.geo+json&qualidade=minima&intrarregiao=municipio'
+    url_metadados_estado = f'http://servicodados.ibge.gov.br/api/v3/malhas/estados/{uf}/metadados'
+
+    municipios = get(url_malha_geografica).json()
+    estado = get(url_metadados_estado).json()
+
+    fig = px.choropleth_mapbox(
         df_choropleph,
         geojson=municipios,
         locations='codarea',
-        featureidkey="properties.codarea",
         color=variavel,
+        featureidkey="properties.codarea",
         color_continuous_scale=color,
         animation_frame='Periodo',
+        mapbox_style="carto-positron",
+        zoom=6.8,
+        center = {
+            "lat": estado[0]['centroide']['latitude'],
+            "lon": estado[0]['centroide']['longitude']
+        },
+        opacity=0.9,
         title=f'{labels[variavel]} - {labels[tipo_visualizacao]}',
         custom_data=[
             df_choropleph['Municipio'],
