@@ -28,7 +28,7 @@ class DAO(ABC, Subscriber):
         with MongoClient(self._get_str_conn()) as client:
             collection = client[self.collection_name].dados
             print(f'Carregando um total de {collection.count_documents({})} registros')
-            self.df = pd.DataFrame(list(collection.find()))
+            self.df = pd.DataFrame(list(collection.find({}, {'_id': 0})))
         print('Dados carregados.')
         print('----- # -----')
 

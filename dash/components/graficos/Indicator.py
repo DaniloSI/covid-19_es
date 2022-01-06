@@ -8,6 +8,9 @@ def _get_dates(df):
     ultima = df['DataNotificacao'].max()
     penultima = df.query('DataNotificacao < @ultima')['DataNotificacao'].max()
     antepenultima = df.query('DataNotificacao < @penultima')['DataNotificacao'].max()
+
+    if ultima.weekday() == 6:
+        return ultima, penultima
     
     return penultima, antepenultima
 
@@ -66,7 +69,7 @@ def indicators(municipio=None):
     fig.add_trace(_indicator(df, penultima_data, antepenultima_data, 'Obitos', {'row': 0, 'column': 1}))
     fig.add_trace(_indicator(df, penultima_data, antepenultima_data, 'Curas', {'row': 0, 'column': 2}, False))
 
-    title = f'Comparação entre os últimos consolidados, sendo {penultima_data.strftime("%d/%m/%y")} e {antepenultima_data.strftime("%d/%m/%y")}'
+    title = f'Comparação entre os últimos consolidados, sendo {antepenultima_data.strftime("%d/%m/%y")} e {penultima_data.strftime("%d/%m/%y")}'
     fig.update_layout(
         height = 200,
         grid = dict(rows=1, columns=3, pattern='independent'),

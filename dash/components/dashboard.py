@@ -8,7 +8,7 @@ import plotly.graph_objects as go
 from components.filtros.Select import dropdown_municipios
 from components.graficos.Evolucao import evolucao
 from components.graficos.Scatter import get_figScatter
-from components.graficos.Treemap import treemap
+from components.graficos.TopRegioes import top_regioes
 from components.graficos.Indicator import indicators
 from components.mapas.Choropleth import Choropleth
 from components.navbar import navbar
@@ -46,17 +46,34 @@ class Dashboard(Subscriber):
                     [
                         dbc.Col(
                             [
-                                # Treemap
+                                # Indicadores
+                                dbc.Card(
+                                    [
+                                        dbc.CardHeader(
+                                            dbc.Row(
+                                                dbc.Col(dropdown_municipios('select-indicators-municipios', True), width=6)
+                                            )
+                                        ),
+                                        dbc.CardBody(
+                                            dbc.Row(
+                                                dbc.Col(
+                                                    dcc.Loading(
+                                                        dcc.Graph(id='indicators'),
+                                                        type='dot'
+                                                    )
+                                                )
+                                            )
+                                        )
+                                    ],
+                                    className="mb-2"
+                                ),
+                                # Top Regiões
                                 dbc.Card(
                                     [
                                         dbc.CardHeader(
                                             [
                                                 dbc.Row(
                                                     [
-                                                        dbc.Col(
-                                                            dropdown_municipios('select-treemap-municipios', True),
-                                                            xs=True
-                                                        ),
                                                         dbc.Col(
                                                             dbc.InputGroup(
                                                                 [
@@ -77,7 +94,7 @@ class Dashboard(Subscriber):
                                                         ),
                                                         dbc.Col(
                                                             dcc.Dropdown(
-                                                                id="dropdown-treemap-variavel",
+                                                                id="dropdown-top-regioes-variavel",
                                                                 options=[
                                                                     {"label": "Confirmados",
                                                                         "value": 'Confirmados'},
@@ -102,10 +119,7 @@ class Dashboard(Subscriber):
                                         ),
                                         dbc.CardBody(
                                             dcc.Loading(
-                                                dcc.Graph(
-                                                    id='treemap',
-                                                    figure=treemap()
-                                                ),
+                                                dcc.Graph(id='top_regioes'),
                                                 type='dot'
                                             )
                                         ),
@@ -146,11 +160,7 @@ class Dashboard(Subscriber):
                                         ),
                                         dbc.CardBody(
                                             dcc.Loading(
-                                                dcc.Graph(
-                                                    id='choropleth',
-                                                    figure=Choropleth.get_figChoropleph(
-                                                        'Incidencia')
-                                                ),
+                                                dcc.Graph(id='choropleth'),
                                                 type='dot'
                                             )
                                         ),
@@ -164,30 +174,6 @@ class Dashboard(Subscriber):
                         ),
                         dbc.Col(
                             [
-                                # Indicadores
-                                dbc.Card(
-                                    [
-                                        dbc.CardHeader(
-                                            dbc.Row(
-                                                dbc.Col(dropdown_municipios('select-indicators-municipios', True), width=6)
-                                            )
-                                        ),
-                                        dbc.CardBody(
-                                            dbc.Row(
-                                                dbc.Col(
-                                                    dcc.Loading(
-                                                        dcc.Graph(
-                                                            id='indicators',
-                                                            figure=indicators()
-                                                        ),
-                                                        type='dot'
-                                                    )
-                                                )
-                                            )
-                                        )
-                                    ],
-                                    className="mb-2"
-                                ),
                                 # Evolução
                                 dbc.Card(
                                     [
@@ -254,10 +240,60 @@ class Dashboard(Subscriber):
                                         ]),
                                         dbc.CardBody(
                                             dcc.Loading(
-                                                dcc.Graph(
-                                                    id='acumulados',
-                                                    figure=evolucao()
-                                                ),
+                                                dcc.Graph(id='acumulados'),
+                                                type='dot'
+                                            )
+                                        ),
+                                    ],
+                                    className="mb-2"
+                                ),
+                                # Treemap
+                                dbc.Card(
+                                    [
+                                        dbc.CardHeader(
+                                            [
+                                                dbc.Row(
+                                                    [
+                                                        dbc.Col(
+                                                            dcc.Dropdown(
+                                                                id='niveis-treemap',
+                                                                options=[
+                                                                    {'label': 'Mesorregião', 'value': 'Mesorregiao'},
+                                                                    {'label': 'Microrregião', 'value': 'Microrregiao'}
+                                                                ],
+                                                                value=['Mesorregiao', 'Microrregiao'],
+                                                                multi=True,
+                                                                placeholder='Selecione os níveis de região...'
+                                                            )
+                                                        ),
+                                                        dbc.Col(
+                                                            dcc.Dropdown(
+                                                                id="dropdown-treemap-variavel",
+                                                                options=[
+                                                                    {"label": "Confirmados",
+                                                                        "value": 'Confirmados'},
+                                                                    {"label": "Óbitos",
+                                                                        "value": 'Obitos'},
+                                                                    {"label": "Recuperados",
+                                                                        "value": 'Curas'},
+                                                                ],
+                                                                value='Confirmados',
+                                                                clearable=False
+                                                            ),
+                                                            width=4,
+                                                            style={
+                                                                'padding-left': '10px'
+                                                            }
+                                                        )
+                                                    ],
+                                                    align="center",
+                                                    no_gutters=True
+                                                )
+                                            ]
+                                        ),
+                                        dbc.CardBody(
+                                            dcc.Loading(
+                                                dcc.Graph(id='treemap'),
                                                 type='dot'
                                             )
                                         ),
@@ -301,10 +337,7 @@ class Dashboard(Subscriber):
                                         ]),
                                         dbc.CardBody(
                                             dcc.Loading(
-                                                dcc.Graph(
-                                                    id='scatter-municipios',
-                                                    figure=get_figScatter()
-                                                ),
+                                                dcc.Graph(id='scatter-municipios'),
                                                 type='dot'
                                             )
                                         ),
