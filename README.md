@@ -26,7 +26,6 @@ O presente projeto foi desenvolvido como parte de um TCC, para a obtenção do g
 
 - [Visão Geral](#vis%C3%A3o-geral)
   - [Fontes de Dados](#fontes-de-dados)
-- [Estrutura do Projeto](#estrutura-de-pastas-do-projeto)
 - [Baixando o Projeto e Executando o Dash Localmente](#baixando-o-projeto-e-executando-o-dash-localmente)
   - [Pré-Requisitos](#pr%C3%A9-requisitos)
   - [Preparando o Ambiente](#preparando-o-ambiente)
@@ -48,51 +47,6 @@ O diagrama abaixo apresenta uma visão geral de todo o projeto.
 O diagrama abaixo apresenta a organização dos componentes do Dashboard, utilizando o framework Dash.
 
 ![Imgur](https://i.imgur.com/jFRgsUk.png)
-
-## Estrutura de Pastas do Projeto
-
-O diagrama abaixo apresenta a organização de pastas do projeto.
-
-```
-.
-├── dash
-│   ├── app.py
-│   ├── assets
-│   │   ├── img
-│   │   │   └── GitHub-Mark-32px.png
-│   │   └── page.css
-│   └── components
-│       ├── dao
-│       │   ├── covid_dao.py
-│       │   ├── dao.py
-│       │   └── municipio_dao.py
-│       ├── dashboard.py
-│       ├── database.py
-│       ├── filtros
-│       │   └── Select.py
-│       ├── graficos
-│       │   ├── Evolucao.py
-│       │   ├── Indicator.py
-│       │   ├── Scatter.py
-│       │   └── Treemap.py
-│       ├── mapas
-│       │   └── Choropleth.py
-│       ├── navbar.py
-│       ├── observer.py
-│       └── util.py
-├── LICENSE
-├── notebooks
-│   ├── Análise Exploratória de Dados.ipynb
-│   ├── Data-visualizations.ipynb
-│   ├── ETL-Indicadores-Municipais.ipynb
-│   ├── Gráfico de Casos no Brasil e no Espírito Santo.ipynb
-│   └── Pre-processing.ipynb
-├── preprocessing.py
-├── Procfile
-├── README.md
-├── requirements.txt
-└── runtime.txt
-```
 
 ## Baixando o Projeto e Executando o Dash Localmente
 
