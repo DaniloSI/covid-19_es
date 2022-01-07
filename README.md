@@ -37,6 +37,11 @@ O diagrama abaixo apresenta uma visão geral de todo o projeto.
 
 ![Imgur](https://i.imgur.com/wOio98t.png)
 
+**Fontes de Dados:**
+- Covid-19: [Painel da Covid-19 - Espírito Santo](https://coronavirus.es.gov.br/painel-covid-19-es)
+- Indicadores de Municípios: [IBGE - API de Serviço de Dados - Pesquisas](https://servicodados.ibge.gov.br/api/docs/pesquisas)
+- Malha Geográfica: [IBGE - API de Serviço de Dados - Malha Geográfica v3.0](https://servicodados.ibge.gov.br/api/docs/malhas?versao=3)
+
 ## Diagrama de Componentes do Dashboard
 
 O diagrama abaixo apresenta a organização dos componentes do Dashboard, utilizando o framework Dash.
