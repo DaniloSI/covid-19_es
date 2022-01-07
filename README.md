@@ -25,6 +25,7 @@ O presente projeto foi desenvolvido como parte de um TCC, para a obtenção do g
 ## Sumário
 
 - [Visão Geral](https://github.com/DaniloSI/covid-19_es#vis%C3%A3o-geral)
+  - [Fontes de Dados](#fontes-de-dados)
 - [Estrutura do Projeto](https://github.com/DaniloSI/covid-19_es#estrutura-do-projeto)
 - [Baixando o Projeto e Executando o Dash Localmente](https://github.com/DaniloSI/covid-19_es#baixando-o-projeto-e-executando-o-dash-localmente)
   - [Pré-Requisitos](https://github.com/DaniloSI/covid-19_es#pr%C3%A9-requisitos)
