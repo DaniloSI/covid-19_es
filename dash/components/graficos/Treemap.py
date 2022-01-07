@@ -35,7 +35,8 @@ def get_treemap(regioes_filtro, variavel):
         texttemplate='%{label} <br /> %{value:,}'
     )
     fig.update_layout(
-        margin = dict(t=50, l=25, r=25, b=25),
+        margin = dict(t=0, l=0, r=0, b=0),
+        height=700,
         separators=',.'
     )
     

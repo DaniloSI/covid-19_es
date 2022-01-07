@@ -8,11 +8,11 @@ from time import sleep
 from components.database import DataBase
 from components.dashboard import Dashboard
 import dash_bootstrap_components as dbc
-import dash_html_components as html
 from dash.dependencies import Input, Output
 from components.graficos.Evolucao import evolucao
 from components.graficos.Scatter import get_figScatter
-from components.graficos.Treemap import treemap
+from components.graficos.TopRegioes import top_regioes
+from components.graficos.Treemap import get_treemap
 from components.graficos.Indicator import indicators
 from components.mapas.Choropleth import Choropleth
 from components.observer import Publisher
@@ -101,21 +101,28 @@ def on_municipio_change(municipio):
     return [], True, None
 
 @app.callback(
+    Output("top_regioes", "figure"),
+    [
+        Input("input_top_n", "value"),
+        Input("dropdown-top-regioes-variavel", "value"),
+    ],
+)
+def on_top_regioes_change(top_n, variavel):
+    return top_regioes(variavel, top_n)
+
+@app.callback(
     Output("treemap", "figure"),
     [
-        Input("select-treemap-municipios", "value"),
-        Input("input_top_n", "value"),
+        Input("niveis-treemap", "value"),
         Input("dropdown-treemap-variavel", "value"),
     ],
-    prevent_initial_call=True
 )
-def on_municipio_treemap_change(municipio, top_n, variavel):
-    return treemap(municipio, top_n, variavel)
+def on_treemap_change(regioes_filtro, variavel):
+    return get_treemap(regioes_filtro, variavel)
 
 @app.callback(
     Output("indicators", "figure"),
     Input("select-indicators-municipios", "value"),
-    prevent_initial_call=True
 )
 def on_municipio_indicators_change(municipio):
     return indicators(municipio)
@@ -139,7 +146,6 @@ def on_scatter_change(tipo, tipo_visualizacao):
         Input("radioitems-choropleth", "value"),
         Input("switch-acumulado-mapa", "value"),
     ],
-    prevent_initial_call=True
 )
 def on_choropleth_change(radio_variavel, switch_acumulado):
     variavel = radio_variavel # Incidencia ou Letalidade

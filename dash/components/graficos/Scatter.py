@@ -127,8 +127,8 @@ def get_fig_last_two_weeks():
 def get_figScatter(tipo='casos-obitos', tipo_visualizacao='time-elapse'):
     if (tipo == 'incidencia-letalidade' and tipo_visualizacao == 'last-two-weeks'):
         fig = get_fig_last_two_weeks()
-
-    fig = get_fig_by_month(tipo)
+    else:
+        fig = get_fig_by_month(tipo)
 
     if (tipo == 'casos-obitos'):
         label_y = 'Casos'
