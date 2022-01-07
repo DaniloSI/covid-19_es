@@ -26,7 +26,7 @@ O presente projeto foi desenvolvido como parte de um TCC, para a obtenção do g
 
 - [Visão Geral](#vis%C3%A3o-geral)
   - [Fontes de Dados](#fontes-de-dados)
-- [Estrutura do Projeto](#estrutura-do-projeto)
+- [Estrutura do Projeto](#estrutura-de-pastas-do-projeto)
 - [Baixando o Projeto e Executando o Dash Localmente](#baixando-o-projeto-e-executando-o-dash-localmente)
   - [Pré-Requisitos](#pr%C3%A9-requisitos)
   - [Preparando o Ambiente](#preparando-o-ambiente)
