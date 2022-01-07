@@ -1,9 +1,6 @@
 name: ETL-Municipios
 
-on:
-  push:
-    branches:
-      - master
+on: workflow_dispatch
 
 jobs:
   build:
