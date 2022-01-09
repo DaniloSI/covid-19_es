@@ -3,9 +3,7 @@
 import plotly.express as px
 from requests import get
 
-
 from components.database import DataBase
-from components.observer import Subscriber
 
 def get_df_choropleph(tipo_visualizacao):
     df_counts = DataBase.get_df()
@@ -141,20 +139,3 @@ def get_fig_choropleph(variavel, tipo_visualizacao):
     )
 
     return fig
-
-class Choropleth(Subscriber):
-    _choropleths = {}
-
-    @staticmethod
-    def update():
-        Choropleth._choropleths['Incidencia'] = get_fig_choropleph('Incidencia', 'relativo')
-        Choropleth._choropleths['Letalidade'] = get_fig_choropleph('Letalidade', 'relativo')
-        Choropleth._choropleths['IncidenciaAcumulado'] = get_fig_choropleph('Incidencia', 'acumulado')
-        Choropleth._choropleths['LetalidadeAcumulado'] = get_fig_choropleph('Letalidade', 'acumulado')
-
-    @staticmethod
-    def get_figChoropleph(variavel):
-        if len(Choropleth._choropleths) == 0:
-            Choropleth.update()
-
-        return Choropleth._choropleths[variavel]

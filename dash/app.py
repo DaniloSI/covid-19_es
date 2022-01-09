@@ -1,20 +1,20 @@
 # -*- coding: utf-8 -*-
 
 import dash
-import os
 import schedule
 from _thread import start_new_thread
 from time import sleep
-from components.database import DataBase
-from components.dashboard import Dashboard
 import dash_bootstrap_components as dbc
 from dash.dependencies import Input, Output
+
+from components.database import DataBase
+from components.dashboard import Dashboard
 from components.graficos.Evolucao import evolucao
-from components.graficos.Scatter import get_figScatter
+from components.graficos.Scatter import get_fig_scatter
 from components.graficos.TopRegioes import top_regioes
 from components.graficos.Treemap import get_treemap
 from components.graficos.Indicator import indicators
-from components.mapas.Choropleth import Choropleth
+from components.mapas.Choropleth import get_fig_choropleph
 from components.observer import Publisher
 
 external_stylesheets = [
@@ -31,7 +31,6 @@ publisher = Publisher()
 
 publisher.subscribe(DataBase)
 publisher.subscribe(Dashboard)
-publisher.subscribe(Choropleth)
 # end
 
 # Instancia a Thread para executar a atualização do Dashboard periodicamente
@@ -75,7 +74,7 @@ def on_evolucao_change(periodo, variavel, municipio, bairro):
 def on_periodo_change(periodo):
     if periodo != 'semanal':
         return '', True
-    
+
     return 'confirmados', False
 
 @app.callback(
@@ -88,14 +87,17 @@ def on_periodo_change(periodo):
     prevent_initial_call=True
 )
 def on_municipio_change(municipio):
-    if municipio != None:
-        query_municipio = f'Municipio == "{municipio}"'
-        bairros = DataBase.get_df()[['Municipio', 'Bairro']].query(
-            query_municipio).sort_values('Bairro').drop_duplicates()['Bairro'].tolist()
+    if municipio is not None:
+        bairros = DataBase.get_df()\
+            .query(f'Municipio == "{municipio}"')\
+            .sort_values('Bairro')\
+            .drop_duplicates()['Bairro']\
+            .tolist()
 
         if len(bairros) > 0:
-            options_bairros = list(
-                map(lambda b: {"label": b, "value": b}, bairros))
+            transform_label_value = lambda b: { "label": b, "value": b }
+            options_bairros = list(map(transform_label_value, bairros))
+
             return options_bairros, False, None
 
     return [], True, None
@@ -138,7 +140,7 @@ def on_municipio_indicators_change(municipio):
     ],
 )
 def on_scatter_change(tipo, tipo_visualizacao):
-    return get_figScatter(tipo, tipo_visualizacao), tipo == 'casos-obitos'
+    return get_fig_scatter(tipo, tipo_visualizacao), tipo == 'casos-obitos'
 
 @app.callback(
     Output("choropleth", "figure"),
@@ -147,13 +149,9 @@ def on_scatter_change(tipo, tipo_visualizacao):
         Input("switch-acumulado-mapa", "value"),
     ],
 )
-def on_choropleth_change(radio_variavel, switch_acumulado):
-    variavel = radio_variavel # Incidencia ou Letalidade
-
-    if len(switch_acumulado) != 0: # Se True, então é acumulado
-        variavel += 'Acumulado'
-    
-    return Choropleth.get_figChoropleph(variavel)
+def on_choropleth_change(variavel, switch_acumulado):
+    tipo = 'relativo' if len(switch_acumulado) == 0 else 'acumulado'
+    return get_fig_choropleph(variavel, tipo)
 
 if __name__ == '__main__':
     app.run_server(debug=False, use_reloader=False)

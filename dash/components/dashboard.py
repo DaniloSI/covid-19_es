@@ -1,36 +1,13 @@
 # -*- coding: utf-8 -*-
 
 import dash_core_components as dcc
-import dash_html_components as html
 import dash_bootstrap_components as dbc
-import plotly.graph_objects as go
+
 
 from components.filtros.Select import dropdown_municipios
-from components.graficos.Evolucao import evolucao
-from components.graficos.Scatter import get_figScatter
-from components.graficos.TopRegioes import top_regioes
-from components.graficos.Indicator import indicators
-from components.mapas.Choropleth import Choropleth
 from components.navbar import navbar
 
-from components.database import DataBase
 from components.observer import Subscriber
-
-
-def total_casos_es():
-    total_confirmados = int(DataBase.get_df()['Confirmados'].sum())
-    return '{:,}'.format(total_confirmados).replace(',', '.')
-
-
-def total_obitos_es():
-    total_obitos = int(DataBase.get_df()['Obitos'].sum())
-    return '{:,}'.format(total_obitos).replace(',', '.')
-
-
-def total_curas_es():
-    total_curas = int(DataBase.get_df()['Curas'].sum())
-    return '{:,}'.format(total_curas).replace(',', '.')
-
 
 class Dashboard(Subscriber):
     _dashboard = None
@@ -51,7 +28,7 @@ class Dashboard(Subscriber):
                                     [
                                         dbc.CardHeader(
                                             dbc.Row(
-                                                dbc.Col(dropdown_municipios('select-indicators-municipios', True), width=6)
+                                                dbc.Col(dropdown_municipios('select-indicators-municipios'), width=6)
                                             )
                                         ),
                                         dbc.CardBody(

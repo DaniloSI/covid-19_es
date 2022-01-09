@@ -42,7 +42,7 @@ def navbar():
                 dbc.NavLink(
                     html.I(
                         '',
-                        className=f'ti ti-brand-github',
+                        className='ti ti-brand-github',
                         style={'fontSize': 24},
                     ),
                     href="https://github.com/DaniloSI/covid-19_es",

@@ -3,14 +3,10 @@ from components.database import DataBase
 
 def top_regioes(variavel, top_n):
     df_covid = DataBase.get_df()
-    df_municipios = DataBase.get_df_municipios()
 
-    df_result = df_covid.set_index('Municipio').join(df_municipios.set_index('Municipio'))
-    df_result = df_result[df_result['codarea'].notna()].reset_index().drop(['ConfirmadosAcumulado', 'ObitosAcumulado', 'CurasAcumulado'], axis=1)
-
-    columns = ['Municipio', 'Bairro', variavel]
-    df_result_regiao = df_covid.sort_values('DataNotificacao')[columns]\
-        .groupby(['Municipio', 'Bairro'])\
+    columns = ['Municipio', 'Bairro']
+    df_result_regiao = df_covid.sort_values('DataNotificacao')[columns + [variavel]]\
+        .groupby(columns)\
         .sum()\
         .reset_index()\
         .sort_values(variavel)\

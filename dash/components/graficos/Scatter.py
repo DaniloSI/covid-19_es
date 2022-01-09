@@ -124,7 +124,7 @@ def get_fig_last_two_weeks():
         custom_data=['Municipio', 'PopulacaoEstimada']
     )
 
-def get_figScatter(tipo='casos-obitos', tipo_visualizacao='time-elapse'):
+def get_fig_scatter(tipo='casos-obitos', tipo_visualizacao='time-elapse'):
     if (tipo == 'incidencia-letalidade' and tipo_visualizacao == 'last-two-weeks'):
         fig = get_fig_last_two_weeks()
     else:

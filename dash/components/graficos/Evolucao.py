@@ -2,17 +2,20 @@
 
 import plotly.graph_objects as go
 from components.database import DataBase
-from components.util import colors
+from components.colors import colors
 from datetime import date, timedelta
 
 def _get_df(municipio, bairro):
     df = DataBase.get_df()
 
-    if municipio != None:
-        df = df.query(f'Municipio == "{municipio}"')
-        if bairro != None:
-            df = df.query(f'Bairro == "{bairro}"')
-    
+    if municipio is not None:
+        query = f'Municipio == "{municipio}"'
+
+        if bairro is not None:
+            query += f' & Bairro == "{bairro}"'
+
+        return df.query(query)
+
     return df
 
 def _acumulado(municipio, bairro):
@@ -116,23 +119,23 @@ def _semanal(municipio, bairro, variavel):
     
 
 def evolucao(periodo='semanal', variavel='', municipio=None, bairro=None):
-    fig = go.Figure()
-
     fig = _acumulado(municipio, bairro) if periodo == 'acumulado' else _semanal(municipio, bairro, variavel)
 
-    titulo = 'Espírito Santo'
+    regiao = 'Espírito Santo'
 
-    if periodo != 'acumulado':
-        titulo = f'{titulo} ({variavel})'
+    if municipio is not None:
+        regiao = municipio
 
-    if municipio != None:
-        titulo = municipio
-        if bairro != None:
-            titulo += f' / {bairro}'
+        if bairro is not None:
+            regiao += f' / {bairro}'
 
-    fig.update_layout(title=titulo, autosize=True, margin={'t': 50, 'r': 0, 'b': 50, 'l': 50}, title_x=0.5)
-    
+    titulo = f'{regiao} ({variavel})' if periodo != 'acumulado' else regiao
+
     fig.update_layout(
+        title=titulo,
+        autosize=True,
+        margin=dict(t=50, r=0, b=50, l=50),
+        title_x=0.5,
         hoverlabel=dict(
             bgcolor="white",
             font_size=16,

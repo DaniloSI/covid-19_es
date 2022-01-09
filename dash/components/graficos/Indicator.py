@@ -2,15 +2,12 @@
 
 import plotly.graph_objects as go
 from components.database import DataBase
-from components.util import colors
+from components.colors import colors
 
 def _get_dates(df):
     ultima = df['DataNotificacao'].max()
-    penultima = df.query('DataNotificacao < @ultima')['DataNotificacao'].max()
-    antepenultima = df.query('DataNotificacao < @penultima')['DataNotificacao'].max()
-
-    if ultima.weekday() == 6:
-        return ultima, penultima
+    penultima = df.query(f'DataNotificacao < "{ultima}"')['DataNotificacao'].max()
+    antepenultima = df.query(f'DataNotificacao < "{penultima}"')['DataNotificacao'].max()
     
     return penultima, antepenultima
 

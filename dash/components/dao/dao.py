@@ -5,7 +5,6 @@ from datetime import datetime
 import os
 from components.observer import Subscriber
 
-
 class DAO(ABC, Subscriber):
     df = None
 
