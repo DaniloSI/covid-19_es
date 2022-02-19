@@ -17,8 +17,13 @@ import numpy as np
 
 print('Carregando dados de Municípios...')
 
+estado_uf = 'ES'
+
 # URL para buscar nomes e dados de municípios do Espírito Santo
-url_municipios = 'https://servicodados.ibge.gov.br/api/v1/localidades/estados/ES/municipios'
+url_municipios = f'https://servicodados.ibge.gov.br/api/v1/localidades/estados/{estado_uf}/municipios'
+
+# JSON que contém um array de municípios do ES, inclindo código de área, nome, mesorregião e microrregião.
+json_municipios = get(url_municipios).json()
 
 # Recebe como parâmetro um dicionário e o retorna em outro formato
 def parse_municipio(m):
@@ -33,7 +38,7 @@ def parse_municipio(m):
     }
 
 # Obtém o nome e o código de cada município
-municipios = list(map(parse_municipio, get(url_municipios).json()))
+municipios = list(map(parse_municipio, json_municipios))
 
 # Gera um DataFrame dos nomes dos municípios e define o código como o índice
 df_municipios = pd.DataFrame(municipios)
