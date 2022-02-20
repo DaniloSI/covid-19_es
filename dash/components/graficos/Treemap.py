@@ -12,7 +12,7 @@ def get_treemap(regioes_filtro, variavel):
         .reset_index()\
         .sort_values(variavel)
 
-    fig = fig = px.treemap(
+    fig = px.treemap(
         df_treemap,
         path=[px.Constant("ESPIRITO SANTO")] + regioes_filtro + ['Municipio', 'Bairro'],
         values=variavel,
